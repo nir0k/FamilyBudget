@@ -31,12 +31,16 @@ class User(AbstractUser):
     email = models.EmailField(
         unique=True,
         verbose_name="Email",
+        help_text="Email",
         null=False,
         blank=False
     )
     username = models.CharField(
         max_length=254,
-        verbose_name='user',
+        verbose_name='User',
+        help_text=(
+            'Required. 254 characters or fewer. Letters, digits and @/./+/-/_ only.'
+        ),
         unique=True,
         null=False,
         blank=False,
@@ -52,7 +56,9 @@ class User(AbstractUser):
         max_length=100,
         blank=True,
         null=True,
-        verbose_name="Telegram ID")
+        verbose_name="Telegram ID",
+        help_text="Telegram ID",
+    )
     is_active = models.BooleanField(default=True, verbose_name="Active")
     is_admin = models.BooleanField(default=False, verbose_name="Admin")
     is_staff = models.BooleanField(default=False, verbose_name="Staff")

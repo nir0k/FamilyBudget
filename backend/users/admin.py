@@ -2,7 +2,23 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 from .models import User
+from finances.models import Cash, BankCard, BankAccount
 from .forms import CustomUserCreationForm, CustomUserChangeForm
+
+
+class CashInline(admin.TabularInline):
+    model = Cash
+    extra = 0
+
+
+class BankCardInline(admin.TabularInline):
+    model = BankCard
+    extra = 0
+
+
+class BankAccountInline(admin.TabularInline):
+    model = BankAccount
+    extra = 0
 
 
 class UserAdmin(BaseUserAdmin):
@@ -26,6 +42,7 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('username', 'email', 'telegram_id')
     ordering = ('username',)
     filter_horizontal = ()
+    inlines = [CashInline, BankCardInline, BankAccountInline]
 
 
 admin.site.register(User, UserAdmin)
