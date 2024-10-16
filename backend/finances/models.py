@@ -20,51 +20,23 @@ class Currency(models.Model):
         help_text="Input currency symbol",
     )
 
+    class Meta:
+        verbose_name = "Currency"
+
     def __str__(self):
         return self.code
 
 
-class Cash(models.Model):
-    """ Cash model """
-    user = models.ForeignKey(
-        "users.User",
-        on_delete=models.CASCADE,
-        verbose_name="User",
-        help_text="Select user"
-    )
+class Account_Type(models.Model):
+    """ Account Type model """
     name = models.CharField(
         max_length=100,
-        verbose_name="Cash name",
-        help_text="Input cash name",
-        default="Cash"
+        verbose_name="Account Type",
+        help_text="Input account type",
     )
-    balance = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=0,
-        verbose_name="Balance",
-        help_text="Input balance"
-    )
-    currency = models.ForeignKey(
-        Currency,
-        on_delete=models.PROTECT,
-        verbose_name="Currency",
-        help_text="Select currency",
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.name
-
-
-class BankCardType(models.Model):
-    """ Bank Card Type model """
-    name = models.CharField(
-        max_length=100,
-        verbose_name="Bank Card Type",
-        help_text="Input bank card type",
-    )
+    class Meta:
+        verbose_name = "Account Type"
 
     def __str__(self):
         return self.name
@@ -74,122 +46,65 @@ class Bank(models.Model):
     """ Bank model """
     name = models.CharField(
         max_length=100,
-        verbose_name="Bank name",
+        verbose_name="Bank",
         help_text="Input bank name",
-        default="Bank"
     )
+    country = models.CharField(
+        max_length=100,
+        verbose_name="Country",
+        help_text="Input bank country",
+    )
+
+    class Meta:
+        verbose_name = "Bank"
 
     def __str__(self):
         return self.name
 
 
-class BankCard(models.Model):
-    """ Bank Card model """
-    user = models.ForeignKey(
-        "users.User",
-        on_delete=models.CASCADE,
-        verbose_name="User",
-        help_text="Select user"
-    )
+class Account(models.Model):
+    """ Account model """
     name = models.CharField(
         max_length=100,
-        verbose_name="Bank Card name",
-        help_text="Input bank card name",
-        default="Bank Card"
+        verbose_name="Account",
+        help_text="Input account name",
+    )
+    account_type = models.ForeignKey(
+        Account_Type,
+        on_delete=models.CASCADE,
+        verbose_name="Account Type",
+        help_text="Select account type",
     )
     bank = models.ForeignKey(
         Bank,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        on_delete=models.CASCADE,
         verbose_name="Bank",
-        help_text="Select bank"
+        help_text="Select bank",
     )
-    type = models.ForeignKey(
-        BankCardType,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="Bank Card Type",
-        help_text="Select bank card type"
+    currency = models.ForeignKey(
+        Currency,
+        on_delete=models.CASCADE,
+        verbose_name="Currency",
+        help_text="Select currency",
     )
     balance = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        default=0,
         verbose_name="Balance",
-        help_text="Input balance"
+        help_text="Input account balance",
     )
-    currency = models.ForeignKey(
-        Currency,
-        on_delete=models.PROTECT,
-        verbose_name="Currency",
-        help_text="Select currency",
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-
-class BankAccountType(models.Model):
-    """ Bank Account Type model """
-    name = models.CharField(
-        max_length=100,
-        verbose_name="Bank Account Type",
-        help_text="Input bank account type",
-    )
-
-    def __str__(self):
-        return self.name
-
-
-class BankAccount(models.Model):
-    """ Bank Account model """
-    user = models.ForeignKey(
+    owner = models.ForeignKey(
         "users.User",
+        related_name="accounts",
         on_delete=models.CASCADE,
-        verbose_name="User",
-        help_text="Select user"
-    )
-    name = models.CharField(
-        max_length=100,
-        verbose_name="Bank Account name",
-        help_text="Input bank account name",
-        default="Bank Account"
-    )
-    bank = models.ForeignKey(
-        Bank,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="Bank",
-        help_text="Select bank"
-    )
-    type = models.ForeignKey(
-        BankAccountType,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        verbose_name="Bank Account Type",
-        help_text="Select bank account type"
-    )
-    balance = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=0,
-        verbose_name="Balance",
-        help_text="Input balance"
-    )
-    currency = models.ForeignKey(
-        Currency,
-        on_delete=models.PROTECT,
-        verbose_name="Currency",
-        help_text="Select currency",
+        verbose_name="Owner",
+        help_text="Select account owner",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Account"
 
     def __str__(self):
         return self.name

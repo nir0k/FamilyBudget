@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Custom apps
     "users.apps.UsersConfig",
     "finances.apps.FinancesConfig",
+    "expenses.apps.ExpensesConfig",
 ]
 
 MIDDLEWARE = [
