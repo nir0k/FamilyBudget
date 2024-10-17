@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     # Custom apps
     "users.apps.UsersConfig",
     "finances.apps.FinancesConfig",
-    "expenses.apps.ExpensesConfig",
+    "transactions.apps.TransactionsConfig",
 ]
 
 MIDDLEWARE = [
@@ -93,7 +93,7 @@ if DB_ENGINE == 'postgresql':
         }
     }
 else:
-    # SQLite по умолчанию
+    # SQLite is the default database
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

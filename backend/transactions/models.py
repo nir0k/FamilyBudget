@@ -7,8 +7,8 @@ def get_default_currency():
     return Account.objects.first().currency if Account.objects.exists() else 1
 
 
-class Expense_Category(models.Model):
-    ''' Expense Category model '''
+class BaseCategory(models.Model):
+    ''' Abstract base model for categories '''
     name = models.CharField(
         max_length=255,
         unique=True,
@@ -24,21 +24,87 @@ class Expense_Category(models.Model):
     )
     owner = models.ForeignKey(
         "users.User",
-        related_name="expense_categories",
         on_delete=models.CASCADE,
         verbose_name="Owner",
         help_text="Category owner"
     )
 
     class Meta:
+        abstract = True
         ordering = ["name"]
-        verbose_name = "Expense Category"
 
     def __str__(self):
         return self.name
 
 
-class Expense(models.Model):
+class Expense_Category(BaseCategory):
+    ''' Expense Category model '''
+    class Meta(BaseCategory.Meta):
+        verbose_name = "Expense Category"
+
+
+class Income_Category(BaseCategory):
+    ''' Income Category model '''
+    class Meta(BaseCategory.Meta):
+        verbose_name = "Income Category"
+
+
+class BaseTransaction(models.Model):
+    ''' Abstract base model for transactions '''
+    category = models.ForeignKey(
+        BaseCategory,
+        on_delete=models.CASCADE,
+        verbose_name="Category",
+        help_text="Transaction category"
+    )
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        verbose_name="Amount",
+        help_text="Transaction amount"
+    )
+    account = models.ForeignKey(
+        Account,
+        on_delete=models.CASCADE,
+        verbose_name="Account",
+        help_text="Transaction account"
+    )
+    currency = models.ForeignKey(
+        Currency,
+        on_delete=models.CASCADE,
+        default=get_default_currency,
+        verbose_name="Currency",
+        help_text="Transaction currency"
+    )
+    date = models.DateTimeField(
+        verbose_name="Date",
+        help_text="Transaction date"
+    )
+    description = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="Description",
+        help_text="Transaction description"
+    )
+    owner = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        verbose_name="Owner",
+        help_text="Transaction owner"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+        ordering = ["-date"]
+
+    def __str__(self):
+        return self.description if self.description else "No description"
+
+
+class Expense(BaseTransaction):
     ''' Expense model '''
     category = models.ForeignKey(
         Expense_Category,
@@ -47,51 +113,20 @@ class Expense(models.Model):
         verbose_name="Category",
         help_text="Expense category"
     )
-    amount = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        verbose_name="Amount",
-        help_text="Expense amount"
-    )
-    account = models.ForeignKey(
-        Account,
-        related_name="expenses",
-        on_delete=models.CASCADE,
-        verbose_name="Account",
-        help_text="Expense account"
-    )
-    currency = models.ForeignKey(
-        Currency,
-        related_name="expenses",
-        on_delete=models.CASCADE,
-        default=get_default_currency,
-        verbose_name="Currency",
-        help_text="Expense currency"
-    )
-    date = models.DateTimeField(
-        verbose_name="Date",
-        help_text="Expense date"
-    )
-    description = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        verbose_name="Description",
-        help_text="Expense description"
-    )
-    owner = models.ForeignKey(
-        "users.User",
-        related_name="expenses",
-        on_delete=models.CASCADE,
-        verbose_name="Owner",
-        help_text="Expense owner"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        ordering = ["-date"]
+    class Meta(BaseTransaction.Meta):
         verbose_name = "Expense"
 
-    def __str__(self):
-        return self.description if self.description else "No description"
+
+class Income(BaseTransaction):
+    ''' Income model '''
+    category = models.ForeignKey(
+        Income_Category,
+        related_name="incomes",
+        on_delete=models.CASCADE,
+        verbose_name="Category",
+        help_text="Income category"
+    )
+
+    class Meta(BaseTransaction.Meta):
+        verbose_name = "Income"
