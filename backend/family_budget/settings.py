@@ -39,10 +39,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'rest_framework',
     # Custom apps
     "users.apps.UsersConfig",
     "finances.apps.FinancesConfig",
     "transactions.apps.TransactionsConfig",
+    "api.apps.ApiConfig",
 ]
 
 MIDDLEWARE = [
