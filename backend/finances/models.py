@@ -105,6 +105,7 @@ class Account(models.Model):
 
     class Meta:
         verbose_name = "Account"
+        unique_together = ['name', 'owner']
 
     def __str__(self):
         return self.name

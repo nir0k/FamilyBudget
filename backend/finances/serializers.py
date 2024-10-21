@@ -21,7 +21,6 @@ class BankSerializer(serializers.ModelSerializer):
 
 
 class AccountSerializer(serializers.ModelSerializer):
-    owner = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Account
