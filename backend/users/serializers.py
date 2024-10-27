@@ -5,7 +5,8 @@ from finances.models import Account
 
 
 class UserSerializer(serializers.ModelSerializer):
-    accounts = AccountSerializer(many=True, required=False)
+    ''' Serializer for user model '''
+    accounts = AccountSerializer(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -20,9 +21,14 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'password': {
                 'write_only': True,
-                'required': True,
+                'required': False,
             },
         }
+
+    def validate(self, data):
+        if not self.instance and not data.get('password'):
+            raise serializers.ValidationError({"password": "This field is required."})
+        return data
 
     def create(self, validated_data):
         if 'accounts' not in self.initial_data:
@@ -37,6 +43,7 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
+        ''' Update user and accounts '''
         if 'accounts' in validated_data:
             accounts_data = validated_data.pop('accounts')
             existing_account_ids = [account.id for account in instance.accounts.all()]
@@ -58,3 +65,22 @@ class UserSerializer(serializers.ModelSerializer):
                 Account.objects.get(id=account_id, owner=instance).delete()
 
         return super().update(instance, validated_data)
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    ''' Serializer for changing user password '''
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_current_password(self, value):
+        user = self.context['user']
+        if not user.check_password(value):
+            raise serializers.ValidationError("Current password is not correct")
+        return value
+
+    def save(self, **kwargs):
+        user = self.context['user']
+        new_password = self.validated_data['new_password']
+        user.set_password(new_password)
+        user.save()
+        return user
