@@ -163,3 +163,8 @@ cython_debug/
 
 setup.cfg
 /backend/pytest.ini
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover

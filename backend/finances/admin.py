@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import (Account, Bank, Currency, Account_Type)
+
+from .models import Account, Account_Type, Bank, Currency
 
 
 @admin.register(Account)
@@ -12,7 +13,7 @@ class AccountAdmin(admin.ModelAdmin):
         "balance",
         "owner",
         "created_at",
-        "updated_at"
+        "updated_at",
     ]
     list_filter = ["account_type", "bank", "currency", "owner"]
     search_fields = ["name", "account_type", "bank", "currency"]

@@ -1,32 +1,30 @@
 from django.db import models
-from finances.models import Currency, Account
+from finances.models import Account, Currency
 
 
 def get_default_currency():
-    ''' Get the default currency '''
+    """Get the default currency"""
     return Account.objects.first().currency if Account.objects.exists() else 1
 
 
 class BaseCategory(models.Model):
-    ''' Abstract base model for categories '''
+    """Abstract base model for categories"""
+
     name = models.CharField(
-        max_length=255,
-        unique=True,
-        verbose_name="Category",
-        help_text="Category name"
+        max_length=255, unique=True, verbose_name="Category", help_text="Category name"
     )
     description = models.CharField(
         max_length=255,
         blank=True,
         null=True,
         verbose_name="Description",
-        help_text="Category description"
+        help_text="Category description",
     )
     owner = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
         verbose_name="Owner",
-        help_text="Category owner"
+        help_text="Category owner",
     )
 
     class Meta:
@@ -38,60 +36,60 @@ class BaseCategory(models.Model):
 
 
 class Expense_Category(BaseCategory):
-    ''' Expense Category model '''
+    """Expense Category model"""
+
     class Meta(BaseCategory.Meta):
         verbose_name = "Expense Category"
 
 
 class Income_Category(BaseCategory):
-    ''' Income Category model '''
+    """Income Category model"""
+
     class Meta(BaseCategory.Meta):
         verbose_name = "Income Category"
 
 
 class BaseTransaction(models.Model):
-    ''' Abstract base model for transactions '''
+    """Abstract base model for transactions"""
+
     category = models.ForeignKey(
         BaseCategory,
         on_delete=models.CASCADE,
         verbose_name="Category",
-        help_text="Transaction category"
+        help_text="Transaction category",
     )
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         verbose_name="Amount",
-        help_text="Transaction amount"
+        help_text="Transaction amount",
     )
     account = models.ForeignKey(
         Account,
         on_delete=models.CASCADE,
         verbose_name="Account",
-        help_text="Transaction account"
+        help_text="Transaction account",
     )
     currency = models.ForeignKey(
         Currency,
         on_delete=models.CASCADE,
         default=get_default_currency,
         verbose_name="Currency",
-        help_text="Transaction currency"
+        help_text="Transaction currency",
     )
-    date = models.DateTimeField(
-        verbose_name="Date",
-        help_text="Transaction date"
-    )
+    date = models.DateTimeField(verbose_name="Date", help_text="Transaction date")
     description = models.CharField(
         max_length=255,
         blank=True,
         null=True,
         verbose_name="Description",
-        help_text="Transaction description"
+        help_text="Transaction description",
     )
     owner = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
         verbose_name="Owner",
-        help_text="Transaction owner"
+        help_text="Transaction owner",
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -105,13 +103,14 @@ class BaseTransaction(models.Model):
 
 
 class Expense(BaseTransaction):
-    ''' Expense model '''
+    """Expense model"""
+
     category = models.ForeignKey(
         Expense_Category,
         related_name="expenses",
         on_delete=models.CASCADE,
         verbose_name="Category",
-        help_text="Expense category"
+        help_text="Expense category",
     )
 
     class Meta(BaseTransaction.Meta):
@@ -119,13 +118,14 @@ class Expense(BaseTransaction):
 
 
 class Income(BaseTransaction):
-    ''' Income model '''
+    """Income model"""
+
     category = models.ForeignKey(
         Income_Category,
         related_name="incomes",
         on_delete=models.CASCADE,
         verbose_name="Category",
-        help_text="Income category"
+        help_text="Income category",
     )
 
     class Meta(BaseTransaction.Meta):

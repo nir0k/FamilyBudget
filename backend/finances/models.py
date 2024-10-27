@@ -2,7 +2,8 @@ from django.db import models
 
 
 class Currency(models.Model):
-    """ Currency model """
+    """Currency model"""
+
     name = models.CharField(
         max_length=100,
         verbose_name="Currency",
@@ -12,7 +13,7 @@ class Currency(models.Model):
         max_length=3,
         verbose_name="Code",
         help_text="Input currency code",
-        default="XXX"
+        default="XXX",
     )
     symbol = models.CharField(
         max_length=3,
@@ -28,7 +29,8 @@ class Currency(models.Model):
 
 
 class Account_Type(models.Model):
-    """ Account Type model """
+    """Account Type model"""
+
     name = models.CharField(
         max_length=100,
         verbose_name="Account Type",
@@ -43,7 +45,8 @@ class Account_Type(models.Model):
 
 
 class Bank(models.Model):
-    """ Bank model """
+    """Bank model"""
+
     name = models.CharField(
         max_length=100,
         verbose_name="Bank",
@@ -63,7 +66,8 @@ class Bank(models.Model):
 
 
 class Account(models.Model):
-    """ Account model """
+    """Account model"""
+
     name = models.CharField(
         max_length=100,
         verbose_name="Account",
@@ -105,7 +109,7 @@ class Account(models.Model):
 
     class Meta:
         verbose_name = "Account"
-        unique_together = ['name', 'owner']
+        unique_together = ["name", "owner"]
 
     def __str__(self):
         return self.name

@@ -1,11 +1,12 @@
 from rest_framework import viewsets
+
+from .models import Account, Account_Type, Bank, Currency
 from .serializers import (
-    CurrencySerializer,
     Account_TypeSerializer,
+    AccountSerializer,
     BankSerializer,
-    AccountSerializer
+    CurrencySerializer,
 )
-from .models import (Currency, Account_Type, Bank, Account)
 
 
 class CurrencyViewSet(viewsets.ModelViewSet):

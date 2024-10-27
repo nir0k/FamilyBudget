@@ -1,13 +1,13 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import RegexValidator
+from django.db import models
 
 
 class MyUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
-        """ Create and return a regular User """
+        """Create and return a regular User"""
         if not email:
-            raise ValueError('The Email field must be set')
+            raise ValueError("The Email field must be set")
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
@@ -15,40 +15,36 @@ class MyUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username, email, password=None, **extra_fields):
-        """ Create and return a Superuser """
-        extra_fields.setdefault('is_admin', True)
-        extra_fields.setdefault('is_staff', True)
+        """Create and return a Superuser"""
+        extra_fields.setdefault("is_admin", True)
+        extra_fields.setdefault("is_staff", True)
 
-        if extra_fields.get('is_admin') is not True:
-            raise ValueError('Superuser must have is_admin=True.')
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get("is_admin") is not True:
+            raise ValueError("Superuser must have is_admin=True.")
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
 
         return self.create_user(username, email, password, **extra_fields)
 
 
 class User(AbstractUser):
     email = models.EmailField(
-        unique=True,
-        verbose_name="Email",
-        help_text="Email",
-        null=False,
-        blank=False
+        unique=True, verbose_name="Email", help_text="Email", null=False, blank=False
     )
     username = models.CharField(
         max_length=254,
-        verbose_name='User',
+        verbose_name="User",
         help_text=(
-            'Required. 254 characters or fewer. Letters, digits and @/./+/-/_ only.'
+            "Required. 254 characters or fewer. Letters, digits and @/./+/-/_ only."
         ),
         unique=True,
         null=False,
         blank=False,
         validators=[
             RegexValidator(
-                regex=r'^(?!^me$)[\w.@+-]+$',
-                message='Username must be Alphanumeric',
-                code='invalid_username',
+                regex=r"^(?!^me$)[\w.@+-]+$",
+                message="Username must be Alphanumeric",
+                code="invalid_username",
             )
         ],
     )
@@ -65,11 +61,11 @@ class User(AbstractUser):
 
     objects = MyUserManager()
 
-    REQUIRED_FIELDS = ['email']
-    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ["email"]
+    USERNAME_FIELD = "username"
 
     class Meta:
-        verbose_name = 'User'
+        verbose_name = "User"
 
     def __str__(self):
         return self.username

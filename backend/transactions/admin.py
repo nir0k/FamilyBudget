@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from .models import Expense, Expense_Category, Income, Income_Category
 
 
@@ -21,7 +22,7 @@ class ExpenseAdmin(admin.ModelAdmin):
         "category",
         "owner",
         "created_at",
-        "updated_at"
+        "updated_at",
     ]
     list_filter = ["account", "currency", "category", "owner"]
     search_fields = [
@@ -31,7 +32,7 @@ class ExpenseAdmin(admin.ModelAdmin):
         "date",
         "description",
         "category",
-        "owner"
+        "owner",
     ]
     ordering = ["-date", "amount", "account", "currency", "category", "owner"]
     list_per_page = 10
@@ -56,7 +57,7 @@ class IncomeAdmin(admin.ModelAdmin):
         "category",
         "owner",
         "created_at",
-        "updated_at"
+        "updated_at",
     ]
     list_filter = ["account", "currency", "category", "owner"]
     search_fields = [
@@ -66,7 +67,7 @@ class IncomeAdmin(admin.ModelAdmin):
         "date",
         "description",
         "category",
-        "owner"
+        "owner",
     ]
     ordering = ["-date", "amount", "account", "currency", "category", "owner"]
     list_per_page = 10
