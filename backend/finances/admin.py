@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Account, Account_Type, Bank, Currency
+from .models import Account, AccountType, Bank, Currency
 
 
 @admin.register(Account)
@@ -38,8 +38,8 @@ class CurrencyAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
-@admin.register(Account_Type)
-class Account_TypeAdmin(admin.ModelAdmin):
+@admin.register(AccountType)
+class AccountTypeAdmin(admin.ModelAdmin):
     list_display = ["name"]
     search_fields = ["name"]
     ordering = ["name"]

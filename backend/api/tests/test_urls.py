@@ -41,7 +41,7 @@ class APIRouteTests(APITestCase):
 
     def test_account_type_list_route(self):
         """Test the account types list route"""
-        url = reverse("account_type-list")
+        url = reverse("accounttype-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

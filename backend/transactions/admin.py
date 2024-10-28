@@ -1,10 +1,10 @@
 from django.contrib import admin
 
-from .models import Expense, Expense_Category, Income, Income_Category
+from .models import Expense, ExpenseCategory, Income, IncomeCategory
 
 
-@admin.register(Expense_Category)
-class Expense_CategoryAdmin(admin.ModelAdmin):
+@admin.register(ExpenseCategory)
+class ExpenseCategoryAdmin(admin.ModelAdmin):
     list_display = ["name", "description", "owner"]
     search_fields = ["name", "description", "owner"]
     ordering = ["name", "owner"]
@@ -38,8 +38,8 @@ class ExpenseAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
-@admin.register(Income_Category)
-class Income_CategoryAdmin(admin.ModelAdmin):
+@admin.register(IncomeCategory)
+class IncomeCategoryAdmin(admin.ModelAdmin):
     list_display = ["name", "description", "owner"]
     search_fields = ["name", "description", "owner"]
     ordering = ["name", "owner"]

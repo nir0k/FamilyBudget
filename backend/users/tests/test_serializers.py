@@ -32,7 +32,7 @@ class UserSerializerTests(TestCase):
         self.assertTrue(serializer.is_valid(), msg=serializer.errors)
         user = serializer.save()
 
-        self.assertEqual(User.objects.count(), 2)  # Учитывая setUp, второй пользователь
+        self.assertEqual(User.objects.count(), 2)
         self.assertEqual(Account.objects.count(), 0)
         self.assertEqual(user.accounts.count(), 0)
 
@@ -64,7 +64,6 @@ class UserSerializerTests(TestCase):
 
     def test_update_user_without_accounts(self):
         """Test updating a user without accounts"""
-        # Используем уже существующего пользователя self.user
         update_data = {
             "username": "updateduser",
             "email": "updated@example.com",

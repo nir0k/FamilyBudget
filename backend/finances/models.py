@@ -20,15 +20,23 @@ class Currency(models.Model):
         verbose_name="Symbol",
         help_text="Input currency symbol",
     )
+    owner = models.ForeignKey(
+        "users.User",
+        related_name="currencies",
+        on_delete=models.CASCADE,
+        verbose_name="Owner",
+        help_text="Select currency owner",
+    )
 
     class Meta:
         verbose_name = "Currency"
+        unique_together = ["name", "owner"]
 
     def __str__(self):
         return self.code
 
 
-class Account_Type(models.Model):
+class AccountType(models.Model):
     """Account Type model"""
 
     name = models.CharField(
@@ -36,9 +44,17 @@ class Account_Type(models.Model):
         verbose_name="Account Type",
         help_text="Input account type",
     )
+    owner = models.ForeignKey(
+        "users.User",
+        related_name="account_types",
+        on_delete=models.CASCADE,
+        verbose_name="Owner",
+        help_text="Select account type owner",
+    )
 
     class Meta:
         verbose_name = "Account Type"
+        unique_together = ["name", "owner"]
 
     def __str__(self):
         return self.name
@@ -57,9 +73,17 @@ class Bank(models.Model):
         verbose_name="Country",
         help_text="Input bank country",
     )
+    owner = models.ForeignKey(
+        "users.User",
+        related_name="banks",
+        on_delete=models.CASCADE,
+        verbose_name="Owner",
+        help_text="Select bank owner",
+    )
 
     class Meta:
         verbose_name = "Bank"
+        unique_together = ["name", "owner"]
 
     def __str__(self):
         return self.name
@@ -74,7 +98,7 @@ class Account(models.Model):
         help_text="Input account name",
     )
     account_type = models.ForeignKey(
-        Account_Type,
+        AccountType,
         on_delete=models.CASCADE,
         verbose_name="Account Type",
         help_text="Select account type",

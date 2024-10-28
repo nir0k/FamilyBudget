@@ -1,6 +1,6 @@
 from django.urls import include, path
 from finances.views import (
-    Account_TypeViewSet,
+    AccountTypeViewSet,
     AccountViewSet,
     BankViewSet,
     CurrencyViewSet,
@@ -11,7 +11,7 @@ from users.views import UserViewSet, change_password
 router = routers.DefaultRouter()
 router.register(r"users", UserViewSet)
 router.register(r"currencies", CurrencyViewSet)
-router.register(r"account_types", Account_TypeViewSet)
+router.register(r"accountTypes", AccountTypeViewSet)
 router.register(r"banks", BankViewSet)
 router.register(r"accounts", AccountViewSet)
 

@@ -4,3 +4,7 @@ from django.apps import AppConfig
 class FinancesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "finances"
+
+    def ready(self):
+        # This import is necessary for signal registration
+        import finances.signals  # noqa: F401

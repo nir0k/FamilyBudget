@@ -30,19 +30,20 @@ class BaseCategory(models.Model):
     class Meta:
         abstract = True
         ordering = ["name"]
+        unique_together = ["name", "owner"]
 
     def __str__(self):
         return self.name
 
 
-class Expense_Category(BaseCategory):
+class ExpenseCategory(BaseCategory):
     """Expense Category model"""
 
     class Meta(BaseCategory.Meta):
         verbose_name = "Expense Category"
 
 
-class Income_Category(BaseCategory):
+class IncomeCategory(BaseCategory):
     """Income Category model"""
 
     class Meta(BaseCategory.Meta):
@@ -106,7 +107,7 @@ class Expense(BaseTransaction):
     """Expense model"""
 
     category = models.ForeignKey(
-        Expense_Category,
+        ExpenseCategory,
         related_name="expenses",
         on_delete=models.CASCADE,
         verbose_name="Category",
@@ -121,7 +122,7 @@ class Income(BaseTransaction):
     """Income model"""
 
     category = models.ForeignKey(
-        Income_Category,
+        IncomeCategory,
         related_name="incomes",
         on_delete=models.CASCADE,
         verbose_name="Category",
