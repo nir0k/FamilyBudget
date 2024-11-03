@@ -1,0 +1,11 @@
+{
+  "welcome": "Добро пожаловать",
+  "login": "Вход",
+  "logout": "Выход",
+  "email": "Эл. почта",
+  "password": "Пароль",
+  "language": "Язык",
+  "switchToLightTheme": "Переключить на светлую тему",
+  "switchToDarkTheme": "Переключить на темную тему",
+  "guest": "Гость"
+}

@@ -32,7 +32,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="").split(",")
 
 # CORS settings
 CORS_ORIGIN_ALLOW_ALL = config("CORS_ORIGIN_ALLOW_ALL", default=False, cast=bool)
-CORS_URLS_REGEX = config("CORS_URLS_REGEX", default="^/api/.*$")
+# CORS_URLS_REGEX = config("CORS_URLS_REGEX", default="^/api/.*$")
 CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="").split(",")
 
 
