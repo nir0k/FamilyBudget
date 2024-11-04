@@ -29,5 +29,17 @@
   "accounts": "Счета",
   "accountTypes": "Типы счетов",
   "banks": "Банки",
-  "currency": "Валюта"
+  "currency": "Валюта",
+  "currencies": "Валюты",
+  "code": "Код",
+  "name": "Название",
+  "symbol": "Символ",
+  "search": "Поиск",
+  "addCurrency": "Добавить валюту",
+  "editCurrency": "Редактировать валюту",
+  "confirmDelete": "Подтвердите удаление",
+  "confirmDeleteMessage": "Вы уверены, что хотите удалить валюту {{name}} ({{code}})?",
+  "delete": "Удалить",
+  "edit": "Редактировать",
+  "actions": "Действия"
 }

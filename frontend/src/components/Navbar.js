@@ -1,9 +1,11 @@
+// src/components/Navbar.js
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaMoon, FaSun, FaUserCircle, FaUserAlt } from 'react-icons/fa';
 import { Tooltip } from 'react-tooltip';
 import { Dropdown } from 'react-bootstrap';
 import UserInfoOffcanvas from './UserInfoOffcanvas';
+import CurrencyOffcanvas from './CurrencyOffcanvas';
 import { useTranslation } from 'react-i18next';
 import { fetchUserData } from '../api';
 
@@ -13,7 +15,8 @@ function Navbar({ isDarkTheme, toggleTheme }) {
     const authToken = localStorage.getItem('authToken');
     const username = localStorage.getItem('username');
 
-    const [showOffcanvas, setShowOffcanvas] = useState(false);
+    const [showUserOffcanvas, setShowUserOffcanvas] = useState(false);
+    const [showCurrencyOffcanvas, setShowCurrencyOffcanvas] = useState(false);
     const [userData, setUserData] = useState({});
     const [currentLang, setCurrentLang] = useState(i18n.language);
 
@@ -51,7 +54,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
             <div className="container">
                 <Link to="/" className="navbar-brand">Family Budget</Link>
 
-                {/* Finances Dropdown placed after brand name */}
+                {/* Finances Dropdown */}
                 <Dropdown align="end" className="ms-2">
                     <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
                         {t('finances')}
@@ -61,7 +64,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                         <Dropdown.Item>{t('accounts')}</Dropdown.Item>
                         <Dropdown.Item>{t('accountTypes')}</Dropdown.Item>
                         <Dropdown.Item>{t('banks')}</Dropdown.Item>
-                        <Dropdown.Item>{t('currency')}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setShowCurrencyOffcanvas(true)}>{t('currency')}</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
 
@@ -96,7 +99,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                                <Dropdown.Item onClick={() => setShowOffcanvas(true)}>
+                                <Dropdown.Item onClick={() => setShowUserOffcanvas(true)}>
                                     {t('userInfo')}
                                 </Dropdown.Item>
                                 <Dropdown.Item onClick={handleLogout}>{t('logout')}</Dropdown.Item>
@@ -118,9 +121,15 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
                 {/* Offcanvas для отображения информации о пользователе */}
                 <UserInfoOffcanvas
-                    show={showOffcanvas}
-                    handleClose={() => setShowOffcanvas(false)}
+                    show={showUserOffcanvas}
+                    handleClose={() => setShowUserOffcanvas(false)}
                     userData={userData}
+                />
+
+                {/* Offcanvas для отображения валют */}
+                <CurrencyOffcanvas
+                    show={showCurrencyOffcanvas}
+                    handleClose={() => setShowCurrencyOffcanvas(false)}
                 />
             </div>
         </nav>
