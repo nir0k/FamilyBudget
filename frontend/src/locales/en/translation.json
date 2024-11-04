@@ -18,6 +18,7 @@
   "userDataUpdated": "User data updated successfully",
   "updateFailed": "Failed to update user data",
   "enterCurrentPassword": "Enter your current password",
+  "currentPassword": "Current Password",
   "newPassword": "New Password",
   "enterNewPassword": "Enter a new password",
   "confirmNewPassword": "Confirm new password",

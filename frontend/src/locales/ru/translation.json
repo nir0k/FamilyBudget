@@ -18,6 +18,7 @@
   "userDataUpdated": "Данные пользователя успешно обновлены",
   "updateFailed": "Не удалось обновить данные пользователя",
   "enterCurrentPassword": "Введите текущий пароль",
+  "currentPassword": "Текущий пароль",
   "newPassword": "Новый пароль",
   "enterNewPassword": "Введите новый пароль",
   "confirmNewPassword": "Подтвердите новый пароль",
