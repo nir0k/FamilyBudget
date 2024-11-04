@@ -8,6 +8,7 @@ from .models import User
 from .serializers import ChangePasswordSerializer, UserSerializer
 
 
+# TODO: Add post ability for /me endpoint
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer

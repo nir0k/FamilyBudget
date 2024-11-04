@@ -1,25 +1,40 @@
 // src/components/Navbar.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaMoon, FaSun, FaUserCircle, FaUserAlt } from 'react-icons/fa';
 import { Tooltip } from 'react-tooltip';
-import { useTranslation } from 'react-i18next';
 import { Dropdown } from 'react-bootstrap';
+import UserInfoOffcanvas from './UserInfoOffcanvas';
+import { useTranslation } from 'react-i18next';
+import { fetchUserData } from '../api';
 
 function Navbar({ isDarkTheme, toggleTheme }) {
     const { i18n, t } = useTranslation();
     const navigate = useNavigate();
     const authToken = localStorage.getItem('authToken');
-    const username = localStorage.getItem('username'); // Get username from localStorage
+    const username = localStorage.getItem('username');
 
-    const changeLanguage = (lang) => {
-        i18n.changeLanguage(lang);
-    };
+    const [showOffcanvas, setShowOffcanvas] = useState(false);
+    const [userData, setUserData] = useState({});
+
+    useEffect(() => {
+        const loadUserData = async () => {
+            try {
+                const data = await fetchUserData(authToken);
+                setUserData(data);
+            } catch (error) {
+                console.error('Failed to fetch user data:', error);
+            }
+        };
+        if (authToken) {
+            loadUserData();
+        }
+    }, [authToken]);
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('username');
-        window.location.href = '/login';;
+        navigate('/login');
     };
 
     return (
@@ -45,8 +60,8 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => changeLanguage('en')}>English</Dropdown.Item>
-                            <Dropdown.Item onClick={() => changeLanguage('ru')}>Русский</Dropdown.Item>
+                            <Dropdown.Item onClick={() => i18n.changeLanguage('en')}>English</Dropdown.Item>
+                            <Dropdown.Item onClick={() => i18n.changeLanguage('ru')}>Русский</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
 
@@ -58,6 +73,9 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => setShowOffcanvas(true)}>
+                                    {t('userInfo')}
+                                </Dropdown.Item>
                                 <Dropdown.Item onClick={handleLogout}>{t('logout')}</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
@@ -74,6 +92,13 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                         </Dropdown>
                     )}
                 </div>
+
+                {/* Offcanvas для отображения информации о пользователе */}
+                <UserInfoOffcanvas
+                    show={showOffcanvas}
+                    handleClose={() => setShowOffcanvas(false)}
+                    userData={userData}
+                />
             </div>
         </nav>
     );
