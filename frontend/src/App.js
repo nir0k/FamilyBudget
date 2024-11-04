@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './components/Login';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import { ToastContainer } from 'react-toastify';
 import './i18n';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -26,6 +27,7 @@ function App() {
     return (
         <Router>
             <div className={`${isDarkTheme ? 'bg-dark text-light' : 'bg-light text-dark'} min-vh-100 d-flex flex-column`}>
+                <ToastContainer position="top-right" autoClose={3000} /> {/* Добавлено */}
                 <Navbar isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
                 
                 <div className="container py-4 flex-grow-1">

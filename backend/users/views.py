@@ -8,20 +8,30 @@ from .models import User
 from .serializers import ChangePasswordSerializer, UserSerializer
 
 
+# TODO: Add post ability for /me endpoint
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     @action(
         detail=False,
-        methods=["get"],
+        methods=["get", "put", "patch"],
         url_path="me",
         url_name="me",
         permission_classes=[IsAuthenticated],
     )
-    def get_me(self, request):
-        self.object = get_object_or_404(User, pk=request.user.pk)
-        serializer = self.get_serializer(request.user)
+    def me(self, request):
+        user = get_object_or_404(User, pk=request.user.pk)
+
+        if request.method in ["PUT", "PATCH"]:
+            serializer = self.get_serializer(
+                user, data=request.data, partial=(request.method == "PATCH"))
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(user)
         return Response(serializer.data)
 
 
