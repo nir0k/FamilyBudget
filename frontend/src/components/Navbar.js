@@ -32,7 +32,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
     }, [authToken]);
 
     useEffect(() => {
-        setCurrentLang(i18n.language.toUpperCase().slice(0, 2)); // Set language abbreviation
+        setCurrentLang(i18n.language.toUpperCase().slice(0, 2));
     }, [i18n.language]);
 
     const handleLogout = () => {
@@ -43,7 +43,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
     const handleLanguageChange = (lang) => {
         i18n.changeLanguage(lang);
-        setCurrentLang(lang.toUpperCase().slice(0, 2)); // Update displayed language abbreviation
+        setCurrentLang(lang.toUpperCase().slice(0, 2));
     };
 
     return (
@@ -51,7 +51,21 @@ function Navbar({ isDarkTheme, toggleTheme }) {
             <div className="container">
                 <Link to="/" className="navbar-brand">Family Budget</Link>
 
-                <div className="d-flex align-items-center">
+                {/* Finances Dropdown placed after brand name */}
+                <Dropdown align="end" className="ms-2">
+                    <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
+                        {t('finances')}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item>{t('accounts')}</Dropdown.Item>
+                        <Dropdown.Item>{t('accountTypes')}</Dropdown.Item>
+                        <Dropdown.Item>{t('banks')}</Dropdown.Item>
+                        <Dropdown.Item>{t('currency')}</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+
+                <div className="d-flex align-items-center ms-auto">
                     <button
                         onClick={toggleTheme}
                         className="btn btn-link p-2"

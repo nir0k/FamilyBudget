@@ -4,7 +4,6 @@
   "logout": "Logout",
   "email": "Email",
   "password": "Password",
-  "language": "Language",
   "switchToLightTheme": "Switch to light theme",
   "switchToDarkTheme": "Switch to dark theme",
   "guest": "Guest",
@@ -25,5 +24,10 @@
   "passwordsDoNotMatch": "Passwords do not match",
   "passwordChangedSuccessfully": "Password changed successfully",
   "passwordChangeFailed": "Failed to change password",
-  "confirmChange": "Confirm Change"
+  "confirmChange": "Confirm Change",
+  "finances": "Finances",
+  "accounts": "Accounts",
+  "accountTypes": "Account types",
+  "banks": "Banks",
+  "currency": "Currency"
 }

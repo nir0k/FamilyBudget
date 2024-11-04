@@ -4,7 +4,6 @@
   "logout": "Выход",
   "email": "Эл. почта",
   "password": "Пароль",
-  "language": "Язык",
   "switchToLightTheme": "Переключить на светлую тему",
   "switchToDarkTheme": "Переключить на темную тему",
   "guest": "Гость",
@@ -25,5 +24,10 @@
   "passwordsDoNotMatch": "Пароли не совпадают",
   "passwordChangedSuccessfully": "Пароль успешно изменен",
   "passwordChangeFailed": "Не удалось сменить пароль",
-  "confirmChange": "Подтвердить изменение"
+  "confirmChange": "Подтвердить изменение",
+  "finances": "Финансы",
+  "accounts": "Счета",
+  "accountTypes": "Типы счетов",
+  "banks": "Банки",
+  "currency": "Валюта"
 }
