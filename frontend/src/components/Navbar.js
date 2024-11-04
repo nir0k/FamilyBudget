@@ -1,4 +1,3 @@
-// src/components/Navbar.js
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaMoon, FaSun, FaUserCircle, FaUserAlt } from 'react-icons/fa';
@@ -16,6 +15,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
     const [showOffcanvas, setShowOffcanvas] = useState(false);
     const [userData, setUserData] = useState({});
+    const [currentLang, setCurrentLang] = useState(i18n.language);
 
     useEffect(() => {
         const loadUserData = async () => {
@@ -31,10 +31,19 @@ function Navbar({ isDarkTheme, toggleTheme }) {
         }
     }, [authToken]);
 
+    useEffect(() => {
+        setCurrentLang(i18n.language.toUpperCase().slice(0, 2)); // Set language abbreviation
+    }, [i18n.language]);
+
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('username');
         navigate('/login');
+    };
+
+    const handleLanguageChange = (lang) => {
+        i18n.changeLanguage(lang);
+        setCurrentLang(lang.toUpperCase().slice(0, 2)); // Update displayed language abbreviation
     };
 
     return (
@@ -56,12 +65,12 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
                     <Dropdown align="end" className="mx-2">
                         <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
-                            {t('language')}
+                            {currentLang}
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => i18n.changeLanguage('en')}>English</Dropdown.Item>
-                            <Dropdown.Item onClick={() => i18n.changeLanguage('ru')}>Русский</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleLanguageChange('en')}>English</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleLanguageChange('ru')}>Русский</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
 
