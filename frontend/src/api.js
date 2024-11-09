@@ -297,4 +297,71 @@ export const deleteAccountType = async (id, token) => {
     });
 };
 
+/**
+ * Получает список счетов с API.
+ *
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Array>} Список счетов.
+ * @throws {Error} Если запрос не удался.
+ */
+export const fetchAccounts = async (token) => {
+    const response = await api.get('/accounts/', {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Добавляет новый счет.
+ *
+ * @param {Object} account - Данные счета.
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Object>} Данные добавленного счета.
+ * @throws {Error} Если запрос не удался.
+ */
+export const addAccount = async (account, token) => {
+    const response = await api.post('/accounts/', account, {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Обновляет существующий счет.
+ *
+ * @param {number} id - ID счета.
+ * @param {Object} account - Обновленные данные счета.
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Object>} Обновленные данные счета.
+ * @throws {Error} Если запрос не удался.
+ */
+export const updateAccount = async (id, account, token) => {
+    const response = await api.put(`/accounts/${id}/`, account, {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Удаляет счет по ID.
+ *
+ * @param {number} id - ID счета.
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<void>} Промис, который выполняется при успешном удалении.
+ * @throws {Error} Если запрос не удался.
+ */
+export const deleteAccount = async (id, token) => {
+    await api.delete(`/accounts/${id}/`, {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+};
+
 export default api;

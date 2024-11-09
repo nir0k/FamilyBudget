@@ -26,7 +26,14 @@
   "passwordChangeFailed": "Failed to change password",
   "confirmChange": "Confirm Change",
   "finances": "Finances",
-  "accounts": "Accounts",  
+  "accounts": "Accounts",
+  "account": "account",
+  "addAccount": "Add Account",
+  "editAccount": "Edit Account",
+  "selectAccountType": "Select Account Type",
+  "selectBank": "Select Bank",
+  "selectCurrency": "Select Currency",
+  "balance": "Balance",
   "currencies": "Currencies",
   "currency": "Currency",
   "addCurrency": "Add Currency",
@@ -49,4 +56,5 @@
   "accountType": "account type",
   "addAccountType": "Add Account Type",
   "editAccountType": "Edit Account Type"
+
 }

@@ -8,6 +8,7 @@ import UserInfoOffcanvas from './UserInfoOffcanvas';
 import CurrencyOffcanvas from './CurrencyOffcanvas';
 import BanksOffcanvas from './BanksOffcanvas';
 import AccountTypesOffcanvas from './AccountTypesOffcanvas';
+import AccountsOffcanvas from './AccountsOffcanvas';
 import { useTranslation } from 'react-i18next';
 import { fetchUserData } from '../api';
 
@@ -21,6 +22,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
     const [showCurrencyOffcanvas, setShowCurrencyOffcanvas] = useState(false);
     const [showBanksOffcanvas, setShowBanksOffcanvas] = useState(false);
     const [showAccountTypesOffcanvas, setShowAccountTypesOffcanvas] = useState(false);
+    const [showAccountsOffcanvas, setShowAccountsOffcanvas] = useState(false);
     const [userData, setUserData] = useState({});
     const [currentLang, setCurrentLang] = useState(i18n.language);
 
@@ -65,7 +67,8 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item>{t('accounts')}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setShowAccountsOffcanvas(true)}>{t('accounts')}</Dropdown.Item>
+                        {/* <Dropdown.Item>{t('accounts')}</Dropdown.Item> */}
                         {/* <Dropdown.Item>{t('accountTypes')}</Dropdown.Item> */}
                         <Dropdown.Item onClick={() => setShowAccountTypesOffcanvas(true)}>{t('accountTypes')}</Dropdown.Item>
                         {/* <Dropdown.Item>{t('banks')}</Dropdown.Item> */}
@@ -149,6 +152,13 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                     show={showAccountTypesOffcanvas}
                     handleClose={() => setShowAccountTypesOffcanvas(false)}
                 />
+
+                {/* Offcanvas для отображения счетов */}
+                <AccountsOffcanvas
+                    show={showAccountsOffcanvas}
+                    handleClose={() => setShowAccountsOffcanvas(false)}
+                />
+
 
 
             </div>
