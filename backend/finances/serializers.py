@@ -11,7 +11,10 @@ class CurrencySerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         user = self.context['request'].user
-        if Currency.objects.filter(name=attrs['name'], owner=user).exists():
+        currency_id = self.instance.id if self.instance else None
+        if Currency.objects.filter(
+            name=attrs['name'], owner=user
+        ).exclude(id=currency_id).exists():
             raise ValidationError("You already have an currency with this name.")
         return attrs
 
@@ -26,7 +29,10 @@ class AccountTypeSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         user = self.context['request'].user
-        if AccountType.objects.filter(name=attrs['name'], owner=user).exists():
+        account_type_id = self.instance.id if self.instance else None
+        if AccountType.objects.filter(
+            name=attrs['name'], owner=user
+        ).exclude(id=account_type_id).exists():
             raise ValidationError("You already have an account type with this name.")
         return attrs
 
@@ -38,8 +44,11 @@ class BankSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         user = self.context['request'].user
-        if Bank.objects.filter(name=attrs['name'], owner=user).exists():
-            raise ValidationError("You already have an bank with this name.")
+        bank_id = self.instance.id if self.instance else None
+        if Bank.objects.filter(
+            name=attrs['name'], owner=user
+        ).exclude(id=bank_id).exists():
+            raise ValidationError("You already have a bank with this name.")
         return attrs
 
 
@@ -58,6 +67,9 @@ class AccountSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         user = self.context['request'].user
-        if Account.objects.filter(name=attrs['name'], owner=user).exists():
+        account_id = self.instance.id if self.instance else None
+        if Account.objects.filter(
+            name=attrs['name'], owner=user
+        ).exclude(id=account_id).exists():
             raise ValidationError("You already have an account with this name.")
         return attrs
