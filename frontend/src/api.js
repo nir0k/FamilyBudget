@@ -230,4 +230,71 @@ export const deleteBank = async (id, token) => {
     });
 };
 
+/**
+ * Получает список типов счетов с API.
+ *
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Array>} Список типов счетов.
+ * @throws {Error} Если запрос не удался.
+ */
+export const fetchAccountTypes = async (token) => {
+    const response = await api.get('/accountTypes/', {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Добавляет новый тип счета.
+ *
+ * @param {Object} accountType - Данные типа счета.
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Object>} Данные добавленного типа счета.
+ * @throws {Error} Если запрос не удался.
+ */
+export const addAccountType = async (accountType, token) => {
+    const response = await api.post('/accountTypes/', accountType, {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Обновляет существующий тип счета.
+ *
+ * @param {number} id - ID типа счета.
+ * @param {Object} accountType - Обновленные данные типа счета.
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Object>} Обновленные данные типа счета.
+ * @throws {Error} Если запрос не удался.
+ */
+export const updateAccountType = async (id, accountType, token) => {
+    const response = await api.put(`/accountTypes/${id}/`, accountType, {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Удаляет тип счета по ID.
+ *
+ * @param {number} id - ID типа счета.
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<void>} Промис, который выполняется при успешном удалении.
+ * @throws {Error} Если запрос не удался.
+ */
+export const deleteAccountType = async (id, token) => {
+    await api.delete(`/accountTypes/${id}/`, {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+};
+
 export default api;

@@ -7,6 +7,7 @@ import { Dropdown } from 'react-bootstrap';
 import UserInfoOffcanvas from './UserInfoOffcanvas';
 import CurrencyOffcanvas from './CurrencyOffcanvas';
 import BanksOffcanvas from './BanksOffcanvas';
+import AccountTypesOffcanvas from './AccountTypesOffcanvas';
 import { useTranslation } from 'react-i18next';
 import { fetchUserData } from '../api';
 
@@ -19,6 +20,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
     const [showUserOffcanvas, setShowUserOffcanvas] = useState(false);
     const [showCurrencyOffcanvas, setShowCurrencyOffcanvas] = useState(false);
     const [showBanksOffcanvas, setShowBanksOffcanvas] = useState(false);
+    const [showAccountTypesOffcanvas, setShowAccountTypesOffcanvas] = useState(false);
     const [userData, setUserData] = useState({});
     const [currentLang, setCurrentLang] = useState(i18n.language);
 
@@ -64,7 +66,8 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
                     <Dropdown.Menu>
                         <Dropdown.Item>{t('accounts')}</Dropdown.Item>
-                        <Dropdown.Item>{t('accountTypes')}</Dropdown.Item>
+                        {/* <Dropdown.Item>{t('accountTypes')}</Dropdown.Item> */}
+                        <Dropdown.Item onClick={() => setShowAccountTypesOffcanvas(true)}>{t('accountTypes')}</Dropdown.Item>
                         {/* <Dropdown.Item>{t('banks')}</Dropdown.Item> */}
                         <Dropdown.Item onClick={() => setShowBanksOffcanvas(true)}>{t('banks')}</Dropdown.Item>
                         <Dropdown.Item onClick={() => setShowCurrencyOffcanvas(true)}>{t('currency')}</Dropdown.Item>
@@ -140,6 +143,13 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                     show={showBanksOffcanvas}
                     handleClose={() => setShowBanksOffcanvas(false)}
                 />
+
+                {/* Offcanvas для отображения типов счетов */}
+                <AccountTypesOffcanvas
+                    show={showAccountTypesOffcanvas}
+                    handleClose={() => setShowAccountTypesOffcanvas(false)}
+                />
+
 
             </div>
         </nav>
