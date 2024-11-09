@@ -1,3 +1,5 @@
+# transactions/models.py
+
 from django.db import models
 from finances.models import Account, Currency
 
@@ -11,7 +13,7 @@ class BaseCategory(models.Model):
     """Abstract base model for categories"""
 
     name = models.CharField(
-        max_length=255, unique=True, verbose_name="Category", help_text="Category name"
+        max_length=255, verbose_name="Category", help_text="Category name"
     )
     description = models.CharField(
         max_length=255,
