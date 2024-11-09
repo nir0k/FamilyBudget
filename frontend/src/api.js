@@ -163,4 +163,71 @@ export const deleteCurrency = async (id, token) => {
     });
 };
 
+/**
+ * Получает список банков с API.
+ *
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Array>} Список банков.
+ * @throws {Error} Если запрос не удался.
+ */
+export const fetchBanks = async (token) => {
+    const response = await api.get('/banks/', {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Добавляет новый банк.
+ *
+ * @param {Object} bank - Данные банка.
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Object>} Данные добавленного банка.
+ * @throws {Error} Если запрос не удался.
+ */
+export const addBank = async (bank, token) => {
+    const response = await api.post('/banks/', bank, {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Обновляет существующий банк.
+ *
+ * @param {number} id - ID банка.
+ * @param {Object} bank - Обновленные данные банка.
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Object>} Обновленные данные банка.
+ * @throws {Error} Если запрос не удался.
+ */
+export const updateBank = async (id, bank, token) => {
+    const response = await api.put(`/banks/${id}/`, bank, {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Удаляет банк по ID.
+ *
+ * @param {number} id - ID банка.
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<void>} Промис, который выполняется при успешном удалении.
+ * @throws {Error} Если запрос не удался.
+ */
+export const deleteBank = async (id, token) => {
+    await api.delete(`/banks/${id}/`, {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+};
+
 export default api;

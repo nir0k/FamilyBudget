@@ -33,7 +33,6 @@
   "addCurrency": "Add Currency",
   "editCurrency": "Edit Currency",
   "confirmDelete": "Confirm Deletion",
-  "confirmDeleteMessage": "Are you sure you want to delete currency {{name}} ({{code}})?",
   "delete": "Delete",
   "edit": "Edit",
   "actions": "Actions",
@@ -41,5 +40,10 @@
   "code": "Code",
   "name": "Name",
   "symbol": "Symbol",
-  "search": "Search"
+  "search": "Search",
+  "bank": "bank",
+  "addBank": "Add Bank",
+  "editBank": "Edit Bank",
+  "country": "Country",
+  "confirmDeleteMessage": "Are you sure you want to delete {{itemType}} \"{{name}}\"?"
 }

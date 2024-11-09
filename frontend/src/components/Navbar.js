@@ -6,6 +6,7 @@ import { Tooltip } from 'react-tooltip';
 import { Dropdown } from 'react-bootstrap';
 import UserInfoOffcanvas from './UserInfoOffcanvas';
 import CurrencyOffcanvas from './CurrencyOffcanvas';
+import BanksOffcanvas from './BanksOffcanvas';
 import { useTranslation } from 'react-i18next';
 import { fetchUserData } from '../api';
 
@@ -17,6 +18,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
     const [showUserOffcanvas, setShowUserOffcanvas] = useState(false);
     const [showCurrencyOffcanvas, setShowCurrencyOffcanvas] = useState(false);
+    const [showBanksOffcanvas, setShowBanksOffcanvas] = useState(false);
     const [userData, setUserData] = useState({});
     const [currentLang, setCurrentLang] = useState(i18n.language);
 
@@ -63,7 +65,8 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                     <Dropdown.Menu>
                         <Dropdown.Item>{t('accounts')}</Dropdown.Item>
                         <Dropdown.Item>{t('accountTypes')}</Dropdown.Item>
-                        <Dropdown.Item>{t('banks')}</Dropdown.Item>
+                        {/* <Dropdown.Item>{t('banks')}</Dropdown.Item> */}
+                        <Dropdown.Item onClick={() => setShowBanksOffcanvas(true)}>{t('banks')}</Dropdown.Item>
                         <Dropdown.Item onClick={() => setShowCurrencyOffcanvas(true)}>{t('currency')}</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
@@ -131,6 +134,13 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                     show={showCurrencyOffcanvas}
                     handleClose={() => setShowCurrencyOffcanvas(false)}
                 />
+
+                {/* Offcanvas для отображения банков */}
+                <BanksOffcanvas
+                    show={showBanksOffcanvas}
+                    handleClose={() => setShowBanksOffcanvas(false)}
+                />
+
             </div>
         </nav>
     );

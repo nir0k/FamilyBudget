@@ -38,8 +38,12 @@
   "addCurrency": "Добавить валюту",
   "editCurrency": "Редактировать валюту",
   "confirmDelete": "Подтвердите удаление",
-  "confirmDeleteMessage": "Вы уверены, что хотите удалить валюту {{name}} ({{code}})?",
   "delete": "Удалить",
   "edit": "Редактировать",
-  "actions": "Действия"
+  "actions": "Действия",
+  "bank": "Банк",
+  "addBank": "Добавить банк",
+  "editBank": "Редактировать банк",
+  "country": "Страна",
+  "confirmDeleteMessage": "Вы уверены, что хотите удалить {{itemType}} \"{{name}}\"?"
 }

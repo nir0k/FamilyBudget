@@ -135,8 +135,10 @@ function CurrencyTable() {
                 show={showDeleteModal}
                 handleClose={() => setShowDeleteModal(false)}
                 handleConfirm={handleConfirmDelete}
-                currency={selectedCurrency || {}}
+                item={selectedCurrency || {}}
+                itemType="currency"
             />
+
         </div>
     );
 }
