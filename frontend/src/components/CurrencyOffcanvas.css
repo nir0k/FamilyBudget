@@ -1,0 +1,10 @@
+/* src/components/CurrencyOffcanvas.css */
+
+.wide-panel {
+    width: 1000px !important;
+    max-width: 100vw;
+}
+
+.dynamic-width-panel {
+    transition: width 0.3s ease;
+}

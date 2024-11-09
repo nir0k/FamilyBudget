@@ -29,5 +29,17 @@
   "accounts": "Accounts",
   "accountTypes": "Account types",
   "banks": "Banks",
-  "currency": "Currency"
+  "currency": "Currency",
+  "addCurrency": "Add Currency",
+  "editCurrency": "Edit Currency",
+  "confirmDelete": "Confirm Deletion",
+  "confirmDeleteMessage": "Are you sure you want to delete currency {{name}} ({{code}})?",
+  "delete": "Delete",
+  "edit": "Edit",
+  "actions": "Actions",
+  "currencies": "Currencies",
+  "code": "Code",
+  "name": "Name",
+  "symbol": "Symbol",
+  "search": "Search"
 }
