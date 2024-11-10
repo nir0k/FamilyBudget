@@ -47,7 +47,6 @@ function AccountTypesTable() {
     const handleSave = async (accountTypeData) => {
         try {
             if (selectedAccountType) {
-                // Обновить тип счета
                 const updatedAccountType = await updateAccountType(selectedAccountType.id, accountTypeData, authToken);
                 setAccountTypes((prevAccountTypes) =>
                     prevAccountTypes.map((accountType) =>
@@ -55,7 +54,6 @@ function AccountTypesTable() {
                     )
                 );
             } else {
-                // Добавить новый тип счета
                 const newAccountType = await addAccountType(accountTypeData, authToken);
                 setAccountTypes([...accountTypes, newAccountType]);
             }

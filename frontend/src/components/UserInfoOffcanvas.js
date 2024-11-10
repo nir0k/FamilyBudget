@@ -21,7 +21,7 @@ function UserInfoOffcanvas({ show, handleClose, userData, isDarkTheme }) {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState(null);
 
-    // Обновляем editableData при изменении userData
+    // Update editableData when userData changes
     useEffect(() => {
         if (userData) {
             setEditableData({
@@ -48,7 +48,7 @@ function UserInfoOffcanvas({ show, handleClose, userData, isDarkTheme }) {
             console.error('Update failed:', error);
             
             if (error.response && error.response.status === 405) {
-                toast.error(t('methodNotAllowed')); // Локализованное сообщение для ошибки 405
+                toast.error(t('methodNotAllowed')); // Localized message for 405 error
             } else {
                 toast.error(t('updateFailed'));
             }

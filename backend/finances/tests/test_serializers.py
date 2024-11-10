@@ -63,12 +63,14 @@ def test_account_type_serializer_unique_validation(user):
 
 @pytest.mark.django_db
 def test_bank_serializer_unique_validation(user):
+    # Create a Bank instance
     bank_data = {"name": "Test Bank", "country": "USA"}
     serializer = BankSerializer(
         data=bank_data, context={'request': type('obj', (object,), {'user': user})})
     serializer.is_valid(raise_exception=True)
     serializer.save(owner=user)
 
+    # Attempt to create a bank with the same name and owner
     duplicate_bank_data = {"name": "Test Bank", "country": "USA"}
     serializer = BankSerializer(
         data=duplicate_bank_data,
@@ -76,7 +78,13 @@ def test_bank_serializer_unique_validation(user):
 
     with pytest.raises(ValidationError) as excinfo:
         serializer.is_valid(raise_exception=True)
-    assert "You already have an bank with this name." in str(excinfo.value)
+
+    # Check that the error contains a message about uniqueness violation
+    error_detail = excinfo.value.detail
+    assert 'non_field_errors' in error_detail
+    assert str(error_detail['non_field_errors'][0]) == (
+        "You already have a bank with this name."
+    )
 
 
 @pytest.mark.django_db

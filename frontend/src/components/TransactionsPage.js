@@ -26,7 +26,7 @@ function TransactionsPage() {
                     fetchAccounts(authToken)
                 ]);
 
-                // Формируем объекты для быстрого доступа по ID
+                // Create objects for quick access by ID
                 const currencyMap = currencyData.reduce((map, currency) => {
                     map[currency.id] = currency.code;
                     return map;

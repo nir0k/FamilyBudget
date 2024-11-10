@@ -13,6 +13,14 @@ import CategoriesOffcanvas from './CategoriesOffcanvas';
 import { useTranslation } from 'react-i18next';
 import { fetchUserData } from '../api';
 
+const languages = [
+    { code: 'en', name: 'English' },
+    { code: 'es', name: 'Español' },
+    { code: 'hu', name: 'Magyar' },
+    { code: 'ru', name: 'Русский' },
+];
+const sortedLanguages = languages.sort((a, b) => a.name.localeCompare(b.name));
+
 function Navbar({ isDarkTheme, toggleTheme }) {
     const { i18n, t } = useTranslation();
     const navigate = useNavigate();
@@ -84,7 +92,18 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={() => navigate('/transactions')}>{t('transactions')}</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setShowCategoriesOffcanvas(true)}>{t('category')}</Dropdown.Item> {/* Открытие Offcanvas для категорий */}
+                        <Dropdown.Item onClick={() => setShowCategoriesOffcanvas(true)}>{t('category')}</Dropdown.Item> {/* Opening Offcanvas for categories */}
+                    </Dropdown.Menu>
+                </Dropdown>
+
+                {/* Reports Dropdown */}
+                <Dropdown align="end" className="ms-2">
+                    <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
+                        {t('reports')}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => navigate('/reports/accounts')}>{t('accountsReport')}</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
 
@@ -107,9 +126,11 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => handleLanguageChange('en')}>English</Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleLanguageChange('ru')}>Русский</Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleLanguageChange('hu')}>Hungary</Dropdown.Item>
+                            {sortedLanguages.map((lang) => (
+                                <Dropdown.Item key={lang.code} onClick={() => handleLanguageChange(lang.code)}>
+                                    {lang.name}
+                                </Dropdown.Item>
+                            ))}
                         </Dropdown.Menu>
                     </Dropdown>
 
@@ -141,38 +162,38 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                     )}
                 </div>
 
-                {/* Offcanvas для отображения информации о пользователе */}
+                {/* Offcanvas for displaying user information */}
                 <UserInfoOffcanvas
                     show={showUserOffcanvas}
                     handleClose={() => setShowUserOffcanvas(false)}
                     userData={userData}
                 />
 
-                {/* Offcanvas для отображения валют */}
+                {/* Offcanvas for displaying currencies */}
                 <CurrencyOffcanvas
                     show={showCurrencyOffcanvas}
                     handleClose={() => setShowCurrencyOffcanvas(false)}
                 />
 
-                {/* Offcanvas для отображения банков */}
+                {/* Offcanvas for displaying banks */}
                 <BanksOffcanvas
                     show={showBanksOffcanvas}
                     handleClose={() => setShowBanksOffcanvas(false)}
                 />
 
-                {/* Offcanvas для отображения типов счетов */}
+                {/* Offcanvas for displaying account types */}
                 <AccountTypesOffcanvas
                     show={showAccountTypesOffcanvas}
                     handleClose={() => setShowAccountTypesOffcanvas(false)}
                 />
 
-                {/* Offcanvas для отображения счетов */}
+                {/* Offcanvas for displaying accounts */}
                 <AccountsOffcanvas
                     show={showAccountsOffcanvas}
                     handleClose={() => setShowAccountsOffcanvas(false)}
                 />
 
-                {/* Offcanvas для отображения категорий */}
+                {/* Offcanvas for displaying categories */}
                 <CategoriesOffcanvas
                     show={showCategoriesOffcanvas}
                     handleClose={() => setShowCategoriesOffcanvas(false)}

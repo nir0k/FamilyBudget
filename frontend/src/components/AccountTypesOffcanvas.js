@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Offcanvas } from 'react-bootstrap';
 import AccountTypesTable from './AccountTypesTable';
 import { useTranslation } from 'react-i18next';
-import './CurrencyOffcanvas.css'; // Можно использовать существующий CSS
+import './CurrencyOffcanvas.css';
 
 function AccountTypesOffcanvas({ show, handleClose }) {
     const { t } = useTranslation();

@@ -5,6 +5,7 @@ import Login from './components/Login';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import TransactionsPage from './components/TransactionsPage';
+import AccountsReportPage from './components/AccountsReportPage';
 import { ToastContainer } from 'react-toastify';
 import './i18n';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -28,7 +29,7 @@ function App() {
     return (
         <Router>
             <div className={`${isDarkTheme ? 'bg-dark text-light' : 'bg-light text-dark'} min-vh-100 d-flex flex-column`}>
-                <ToastContainer position="top-right" autoClose={3000} /> {/* Добавлено */}
+                <ToastContainer position="top-right" autoClose={3000} />
                 <Navbar isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
                 
                 <div className="container py-4 flex-grow-1">
@@ -36,6 +37,7 @@ function App() {
                         <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
                         <Route path="/" element={isAuthenticated ? <div>Welcome to Dashboard</div> : <Navigate to="/login" />} />
                         <Route path="/transactions" element={<TransactionsPage />} />
+                        <Route path="/reports/accounts" element={<AccountsReportPage />} />
                     </Routes>
                 </div>
                 

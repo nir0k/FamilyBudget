@@ -1,5 +1,7 @@
 # transactions/tests/test_views.py
 
+from datetime import datetime, timezone
+
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from finances.models import Account, AccountType, Bank, Currency
@@ -196,7 +198,7 @@ class IncomeViewSetTest(APITestCase):
 
     def test_list_incomes(self):
         Income.objects.create(owner=self.user, **{
-            'date': '2023-01-15T12:00:00Z',
+            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,
@@ -209,7 +211,7 @@ class IncomeViewSetTest(APITestCase):
 
     def test_retrieve_income(self):
         income = Income.objects.create(owner=self.user, **{
-            'date': '2023-01-15T12:00:00Z',
+            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,
@@ -223,7 +225,7 @@ class IncomeViewSetTest(APITestCase):
 
     def test_update_income(self):
         income = Income.objects.create(owner=self.user, **{
-            'date': '2023-01-15T12:00:00Z',
+            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,
@@ -242,7 +244,7 @@ class IncomeViewSetTest(APITestCase):
 
     def test_delete_income(self):
         income = Income.objects.create(owner=self.user, **{
-            'date': '2023-01-15T12:00:00Z',
+            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,
@@ -303,7 +305,7 @@ class ExpenseViewSetTest(APITestCase):
 
     def test_list_expenses(self):
         Expense.objects.create(owner=self.user, **{
-            'date': '2023-01-01T12:00:00Z',
+            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,
@@ -316,7 +318,7 @@ class ExpenseViewSetTest(APITestCase):
 
     def test_retrieve_expense(self):
         expense = Expense.objects.create(owner=self.user, **{
-            'date': '2023-01-01T12:00:00Z',
+            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,
@@ -330,7 +332,7 @@ class ExpenseViewSetTest(APITestCase):
 
     def test_update_expense(self):
         expense = Expense.objects.create(owner=self.user, **{
-            'date': '2023-01-01T12:00:00Z',
+            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,
@@ -349,7 +351,7 @@ class ExpenseViewSetTest(APITestCase):
 
     def test_delete_expense(self):
         expense = Expense.objects.create(owner=self.user, **{
-            'date': '2023-01-01T12:00:00Z',
+            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,

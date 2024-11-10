@@ -1,5 +1,7 @@
 # transactions/tests/test_serializers.py
 
+from datetime import datetime, timezone
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from finances.models import Account, AccountType, Bank, Currency
@@ -201,7 +203,7 @@ class ExpenseSerializerTest(TestCase):
 
     def test_retrieve_expense(self):
         expense = Expense.objects.create(owner=self.user, **{
-            'date': '2023-01-01T12:00:00Z',
+            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,
@@ -214,7 +216,7 @@ class ExpenseSerializerTest(TestCase):
 
     def test_update_expense(self):
         expense = Expense.objects.create(owner=self.user, **{
-            'date': '2023-01-01T12:00:00Z',
+            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,
@@ -239,7 +241,7 @@ class ExpenseSerializerTest(TestCase):
 
     def test_delete_expense(self):
         expense = Expense.objects.create(owner=self.user, **{
-            'date': '2023-01-01T12:00:00Z',
+            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,
@@ -323,7 +325,7 @@ class IncomeSerializerTest(TestCase):
 
     def test_retrieve_income(self):
         income = Income.objects.create(owner=self.user, **{
-            'date': '2023-01-15T12:00:00Z',
+            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,
@@ -336,7 +338,7 @@ class IncomeSerializerTest(TestCase):
 
     def test_update_income(self):
         income = Income.objects.create(owner=self.user, **{
-            'date': '2023-01-15T12:00:00Z',
+            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,
@@ -361,7 +363,7 @@ class IncomeSerializerTest(TestCase):
 
     def test_delete_income(self):
         income = Income.objects.create(owner=self.user, **{
-            'date': '2023-01-15T12:00:00Z',
+            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,

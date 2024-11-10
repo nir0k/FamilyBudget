@@ -2,16 +2,16 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Offcanvas, Button, Form, Table, Modal } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { fetchIncomeCategories, fetchExpenseCategories, updateCategory, deleteCategory, addCategory } from '../api';
-import './CurrencyOffcanvas.css'; // Используем существующий CSS для динамической ширины
+import './CurrencyOffcanvas.css';
 
 function CategoriesOffcanvas({ show, handleClose }) {
     const { t } = useTranslation();
     const [categories, setCategories] = useState([]);
-    const [selectedType, setSelectedType] = useState('expense'); // 'expense' или 'income'
+    const [selectedType, setSelectedType] = useState('expense'); // 'expense' or 'income'
     const [newCategory, setNewCategory] = useState({ name: '', description: '' });
     const [editMode, setEditMode] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [categoryToDelete, setCategoryToDelete] = useState(null); // Хранит объект категории для удаления
+    const [categoryToDelete, setCategoryToDelete] = useState(null); // Stores the category object for deletion
     const authToken = localStorage.getItem('authToken');
     const contentRef = useRef(null);
     const [panelWidth, setPanelWidth] = useState('auto');
@@ -183,7 +183,7 @@ function CategoriesOffcanvas({ show, handleClose }) {
                     </div>
                 </Form>
 
-                {/* Модальное окно подтверждения удаления */}
+                {/* Modal window for delete confirmation */}
                 <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>{t('confirmDelete')}</Modal.Title>

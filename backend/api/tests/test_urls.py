@@ -1,9 +1,11 @@
+from datetime import datetime, timezone
+
 from django.urls import reverse
+from finances.models import Account, AccountType, Bank, Currency
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
+from transactions.models import Expense, ExpenseCategory, Income, IncomeCategory
 from users.models import User
-from finances.models import Account, Currency, AccountType, Bank
-from transactions.models import IncomeCategory, ExpenseCategory, Income, Expense
 
 
 class APIRouteTests(APITestCase):
@@ -42,7 +44,7 @@ class APIRouteTests(APITestCase):
         )
 
         self.income = Income.objects.create(
-            date="2023-01-01T12:00:00Z",
+            date=datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
             amount=5000.00,
             currency=self.currency,
             account=self.account,
@@ -52,7 +54,7 @@ class APIRouteTests(APITestCase):
         )
 
         self.expense = Expense.objects.create(
-            date="2023-01-02T15:00:00Z",
+            date=datetime(2023, 1, 2, 15, 0, 0, tzinfo=timezone.utc),
             amount=100.00,
             currency=self.currency,
             account=self.account,

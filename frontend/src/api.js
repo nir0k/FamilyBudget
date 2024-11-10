@@ -76,7 +76,6 @@ export const changePassword = async (currentPassword, newPassword) => {
     return response.data;
 };
 
-
 /**
  * Updates the user's data.
  *
@@ -94,7 +93,6 @@ export const updateUserData = async (data) => {
     return response.data;
 };
 
-
 /**
  * Fetches the list of currencies from the API.
  *
@@ -110,7 +108,6 @@ export const fetchCurrencies = async (token) => {
     });
     return response.data;
 };
-
 
 /**
  * Adds a new currency.
@@ -164,11 +161,11 @@ export const deleteCurrency = async (id, token) => {
 };
 
 /**
- * Получает список банков с API.
+ * Fetches the list of banks from the API.
  *
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Array>} Список банков.
- * @throws {Error} Если запрос не удался.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Array>} The list of banks.
+ * @throws {Error} If the request fails.
  */
 export const fetchBanks = async (token) => {
     const response = await api.get('/banks/', {
@@ -180,12 +177,12 @@ export const fetchBanks = async (token) => {
 };
 
 /**
- * Добавляет новый банк.
+ * Adds a new bank.
  *
- * @param {Object} bank - Данные банка.
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Object>} Данные добавленного банка.
- * @throws {Error} Если запрос не удался.
+ * @param {Object} bank - The bank data.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Object>} The added bank data.
+ * @throws {Error} If the request fails.
  */
 export const addBank = async (bank, token) => {
     const response = await api.post('/banks/', bank, {
@@ -197,13 +194,13 @@ export const addBank = async (bank, token) => {
 };
 
 /**
- * Обновляет существующий банк.
+ * Updates an existing bank.
  *
- * @param {number} id - ID банка.
- * @param {Object} bank - Обновленные данные банка.
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Object>} Обновленные данные банка.
- * @throws {Error} Если запрос не удался.
+ * @param {number} id - The bank ID.
+ * @param {Object} bank - The updated bank data.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Object>} The updated bank data.
+ * @throws {Error} If the request fails.
  */
 export const updateBank = async (id, bank, token) => {
     const response = await api.put(`/banks/${id}/`, bank, {
@@ -215,12 +212,12 @@ export const updateBank = async (id, bank, token) => {
 };
 
 /**
- * Удаляет банк по ID.
+ * Deletes a bank by ID.
  *
- * @param {number} id - ID банка.
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<void>} Промис, который выполняется при успешном удалении.
- * @throws {Error} Если запрос не удался.
+ * @param {number} id - The bank ID.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<void>} A promise that resolves when the bank is deleted.
+ * @throws {Error} If the request fails.
  */
 export const deleteBank = async (id, token) => {
     await api.delete(`/banks/${id}/`, {
@@ -231,11 +228,11 @@ export const deleteBank = async (id, token) => {
 };
 
 /**
- * Получает список типов счетов с API.
+ * Fetches the list of account types from the API.
  *
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Array>} Список типов счетов.
- * @throws {Error} Если запрос не удался.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Array>} The list of account types.
+ * @throws {Error} If the request fails.
  */
 export const fetchAccountTypes = async (token) => {
     const response = await api.get('/accountTypes/', {
@@ -247,12 +244,12 @@ export const fetchAccountTypes = async (token) => {
 };
 
 /**
- * Добавляет новый тип счета.
+ * Adds a new account type.
  *
- * @param {Object} accountType - Данные типа счета.
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Object>} Данные добавленного типа счета.
- * @throws {Error} Если запрос не удался.
+ * @param {Object} accountType - The account type data.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Object>} The added account type data.
+ * @throws {Error} If the request fails.
  */
 export const addAccountType = async (accountType, token) => {
     const response = await api.post('/accountTypes/', accountType, {
@@ -264,13 +261,13 @@ export const addAccountType = async (accountType, token) => {
 };
 
 /**
- * Обновляет существующий тип счета.
+ * Updates an existing account type.
  *
- * @param {number} id - ID типа счета.
- * @param {Object} accountType - Обновленные данные типа счета.
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Object>} Обновленные данные типа счета.
- * @throws {Error} Если запрос не удался.
+ * @param {number} id - The account type ID.
+ * @param {Object} accountType - The updated account type data.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Object>} The updated account type data.
+ * @throws {Error} If the request fails.
  */
 export const updateAccountType = async (id, accountType, token) => {
     const response = await api.put(`/accountTypes/${id}/`, accountType, {
@@ -282,12 +279,12 @@ export const updateAccountType = async (id, accountType, token) => {
 };
 
 /**
- * Удаляет тип счета по ID.
+ * Deletes an account type by ID.
  *
- * @param {number} id - ID типа счета.
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<void>} Промис, который выполняется при успешном удалении.
- * @throws {Error} Если запрос не удался.
+ * @param {number} id - The account type ID.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<void>} A promise that resolves when the account type is deleted.
+ * @throws {Error} If the request fails.
  */
 export const deleteAccountType = async (id, token) => {
     await api.delete(`/accountTypes/${id}/`, {
@@ -298,11 +295,11 @@ export const deleteAccountType = async (id, token) => {
 };
 
 /**
- * Получает список счетов с API.
+ * Fetches the list of accounts from the API.
  *
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Array>} Список счетов.
- * @throws {Error} Если запрос не удался.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Array>} The list of accounts.
+ * @throws {Error} If the request fails.
  */
 export const fetchAccounts = async (token) => {
     const response = await api.get('/accounts/', {
@@ -314,12 +311,12 @@ export const fetchAccounts = async (token) => {
 };
 
 /**
- * Добавляет новый счет.
+ * Adds a new account.
  *
- * @param {Object} account - Данные счета.
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Object>} Данные добавленного счета.
- * @throws {Error} Если запрос не удался.
+ * @param {Object} account - The account data.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Object>} The added account data.
+ * @throws {Error} If the request fails.
  */
 export const addAccount = async (account, token) => {
     const response = await api.post('/accounts/', account, {
@@ -331,13 +328,13 @@ export const addAccount = async (account, token) => {
 };
 
 /**
- * Обновляет существующий счет.
+ * Updates an existing account.
  *
- * @param {number} id - ID счета.
- * @param {Object} account - Обновленные данные счета.
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Object>} Обновленные данные счета.
- * @throws {Error} Если запрос не удался.
+ * @param {number} id - The account ID.
+ * @param {Object} account - The updated account data.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Object>} The updated account data.
+ * @throws {Error} If the request fails.
  */
 export const updateAccount = async (id, account, token) => {
     const response = await api.put(`/accounts/${id}/`, account, {
@@ -349,12 +346,12 @@ export const updateAccount = async (id, account, token) => {
 };
 
 /**
- * Удаляет счет по ID.
+ * Deletes an account by ID.
  *
- * @param {number} id - ID счета.
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<void>} Промис, который выполняется при успешном удалении.
- * @throws {Error} Если запрос не удался.
+ * @param {number} id - The account ID.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<void>} A promise that resolves when the account is deleted.
+ * @throws {Error} If the request fails.
  */
 export const deleteAccount = async (id, token) => {
     await api.delete(`/accounts/${id}/`, {
@@ -365,10 +362,10 @@ export const deleteAccount = async (id, token) => {
 };
 
 /**
- * Получает список расходов с API.
+ * Fetches the list of expenses from the API.
  *
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Array>} Список расходов.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Array>} The list of expenses.
  */
 export const fetchExpenses = async (token) => {
     const response = await api.get('/expenses/', {
@@ -380,10 +377,10 @@ export const fetchExpenses = async (token) => {
 };
 
 /**
- * Получает список доходов с API.
+ * Fetches the list of incomes from the API.
  *
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Array>} Список доходов.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Array>} The list of incomes.
  */
 export const fetchIncomes = async (token) => {
     const response = await api.get('/incomes/', {
@@ -395,10 +392,10 @@ export const fetchIncomes = async (token) => {
 };
 
 /**
- * Получает список категорий дохода с API.
+ * Fetches the list of income categories from the API.
  *
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Array>} Список категорий дохода.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Array>} The list of income categories.
  */
 export const fetchIncomeCategories = async (token) => {
     const response = await api.get('/incomeCategories/', {
@@ -408,10 +405,10 @@ export const fetchIncomeCategories = async (token) => {
 };
 
 /**
- * Получает список категорий расхода с API.
+ * Fetches the list of expense categories from the API.
  *
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Array>} Список категорий расхода.
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Array>} The list of expense categories.
  */
 export const fetchExpenseCategories = async (token) => {
     const response = await api.get('/expenseCategories/', {
@@ -421,12 +418,12 @@ export const fetchExpenseCategories = async (token) => {
 };
 
 /**
- * Обновляет категорию в API.
+ * Updates a category in the API.
  *
- * @param {Object} category - Объект категории для обновления.
- * @param {string} type - Тип категории ('income' или 'expense').
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<void>} Промис, который выполняется после успешного обновления категории.
+ * @param {Object} category - The category object to update.
+ * @param {string} type - The category type ('income' or 'expense').
+ * @param {string} token - The authentication token.
+ * @returns {Promise<void>} A promise that resolves after the category is successfully updated.
  */
 export const updateCategory = async (category, type, token) => {
     const endpoint = type === 'income' ? '/incomeCategories/' : '/expenseCategories/';
@@ -436,12 +433,12 @@ export const updateCategory = async (category, type, token) => {
 };
 
 /**
- * Удаляет категорию по ее ID с API.
+ * Deletes a category by its ID from the API.
  *
- * @param {number} categoryId - Идентификатор категории для удаления.
- * @param {string} type - Тип категории ('income' или 'expense').
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<void>} Промис, который выполняется после успешного удаления категории.
+ * @param {number} categoryId - The category ID to delete.
+ * @param {string} type - The category type ('income' or 'expense').
+ * @param {string} token - The authentication token.
+ * @returns {Promise<void>} A promise that resolves after the category is successfully deleted.
  */
 export const deleteCategory = async (categoryId, type, token) => {
     const endpoint = type === 'income' ? '/incomeCategories/' : '/expenseCategories/';
@@ -451,12 +448,12 @@ export const deleteCategory = async (categoryId, type, token) => {
 };
 
 /**
- * Добавляет новую категорию в API.
+ * Adds a new category to the API.
  *
- * @param {Object} category - Объект новой категории.
- * @param {string} type - Тип категории ('income' или 'expense').
- * @param {string} token - Токен аутентификации.
- * @returns {Promise<Object>} Промис, который возвращает добавленную категорию.
+ * @param {Object} category - The new category object.
+ * @param {string} type - The category type ('income' or 'expense').
+ * @param {string} token - The authentication token.
+ * @returns {Promise<Object>} A promise that returns the added category.
  */
 export const addCategory = async (category, type, token) => {
     const endpoint = type === 'income' ? '/incomeCategories/' : '/expenseCategories/';
@@ -466,5 +463,23 @@ export const addCategory = async (category, type, token) => {
     return response.data;
 };
 
+/**
+ * Fetches the account balance history from the API.
+ *
+ * @param {number} accountId - The account ID.
+ * @param {string} token - The authentication token.
+ * @param {string} startDate - The start date.
+ * @param {string} endDate - The end date.
+ * @returns {Promise<Array>} The account balance history.
+ */
+export const fetchAccountBalanceHistory = async (accountId, token, startDate, endDate) => {
+    const response = await api.get(`/accounts/${accountId}/balance-history/`, {
+        params: { start_date: startDate, end_date: endDate },
+        headers: {
+            'Authorization': `Token ${token}`
+        }
+    });
+    return response.data;
+};
 
 export default api;

@@ -24,11 +24,11 @@ function AccountsTable() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                // Загрузка счетов
+                // Load accounts
                 const accountsData = await fetchAccounts(authToken);
                 setAccounts(accountsData);
 
-                // Загрузка связанных данных
+                // Load related data
                 const [accountTypesData, banksData, currenciesData] = await Promise.all([
                     fetchAccountTypes(authToken),
                     fetchBanks(authToken),
@@ -62,7 +62,7 @@ function AccountsTable() {
     const handleSave = async (accountData) => {
         try {
             if (selectedAccount) {
-                // Обновить счет
+                // Update account
                 const updatedAccount = await updateAccount(selectedAccount.id, accountData, authToken);
                 setAccounts((prevAccounts) =>
                     prevAccounts.map((account) =>
@@ -70,7 +70,7 @@ function AccountsTable() {
                     )
                 );
             } else {
-                // Добавить новый счет
+                // Add new account
                 const newAccount = await addAccount(accountData, authToken);
                 setAccounts([...accounts, newAccount]);
             }
@@ -94,7 +94,7 @@ function AccountsTable() {
         account.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Функции для получения названий связанных сущностей
+    // Functions to get the names of related entities
     const getAccountTypeName = (id) => {
         const accountType = accountTypes.find(at => at.id === id);
         return accountType ? accountType.name : '';

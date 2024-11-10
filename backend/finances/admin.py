@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Account, AccountType, Bank, Currency
+from .models import Account, AccountBalanceHistory, AccountType, Bank, Currency
 
 
 @admin.register(Account)
@@ -43,4 +43,13 @@ class AccountTypeAdmin(admin.ModelAdmin):
     list_display = ["name"]
     search_fields = ["name"]
     ordering = ["name"]
+    list_per_page = 10
+
+
+@admin.register(AccountBalanceHistory)
+class AccountBalanceHistoryAdmin(admin.ModelAdmin):
+    list_display = ["account", "date", "balance"]
+    list_filter = ["account"]
+    search_fields = ["account"]
+    ordering = ["account", "date"]
     list_per_page = 10
