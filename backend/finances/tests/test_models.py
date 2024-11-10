@@ -119,20 +119,19 @@ def test_account_unique_together_constraint(user):
             owner=user
         )
 
+        @pytest.mark.django_db
+        def test_account_balance_history_creation(user, account):
+            initial_balance = account.balance
+            test_date = timezone.now().date()  # Specify the current date
 
-@pytest.mark.django_db
-def test_account_balance_history_creation(user, account):
-    initial_balance = account.balance
-    test_date = timezone.now().date()  # Указываем текущую дату
+            # Create a balance entry with an explicit date
+            history_entry = AccountBalanceHistory.objects.create(
+                account=account,
+                date=test_date,
+                balance=initial_balance
+            )
 
-    # Создаем запись о балансе с явной датой
-    history_entry = AccountBalanceHistory.objects.create(
-        account=account,
-        date=test_date,
-        balance=initial_balance
-    )
-
-    assert history_entry.account == account
-    assert history_entry.balance == initial_balance
-    assert str(history_entry.balance) == str(initial_balance)
-    assert history_entry.date == test_date  # Проверка даты
+            assert history_entry.account == account
+            assert history_entry.balance == initial_balance
+            assert str(history_entry.balance) == str(initial_balance)
+            assert history_entry.date == test_date  # Check the date

@@ -34,7 +34,7 @@ def account(user):
     )
 
 
-# Тесты для текущего баланса Account
+# Tests for current Account balance
 @pytest.mark.django_db
 def test_expense_creation_updates_account_balance(user, account):
     category = ExpenseCategory.objects.create(name="Groceries", owner=user)
@@ -132,7 +132,7 @@ def test_income_update_updates_account_balance(user, account):
     income.save()
 
     account.refresh_from_db()
-    # Убедитесь, что новый баланс корректно пересчитан
+    # Ensure the new balance is correctly recalculated
     expected_balance = initial_balance + Decimal("100.00")
     assert account.balance == expected_balance, (
         f"Expected {expected_balance}, got {account.balance}"
@@ -159,7 +159,7 @@ def test_income_deletion_updates_account_balance(user, account):
     assert account.balance == initial_balance - Decimal("200.00")
 
 
-# Тесты для истории баланса AccountBalanceHistory
+# Tests for AccountBalanceHistory
 @pytest.mark.django_db
 def test_expense_creation_updates_balance_history(user, account):
     category = ExpenseCategory.objects.create(name="Groceries", owner=user)
@@ -188,7 +188,7 @@ def test_income_creation_updates_balance_history(user, account):
     initial_balance = account.balance
 
     income = Income.objects.create(
-        date=timezone.now(),  # Используем timezone.now() или дату без времени
+        date=timezone.now(),  # Use timezone.now() or date without time
         amount=3000.00,
         currency=account.currency,
         account=account,
@@ -199,7 +199,7 @@ def test_income_creation_updates_balance_history(user, account):
 
     account.refresh_from_db()
     latest_balance_history = AccountBalanceHistory.objects.filter(
-        account=account, date=income.date.date()  # Преобразование даты для фильтрации
+        account=account, date=income.date.date()  # Convert date for filtering
     ).latest('date')
 
     assert latest_balance_history.balance == account.balance

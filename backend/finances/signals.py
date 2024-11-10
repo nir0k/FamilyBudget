@@ -56,7 +56,7 @@ def update_future_balances(account, start_date):
     future_entries = AccountBalanceHistory.objects.filter(
         account=account, date__gt=start_date).order_by('date')
 
-    # Проверка существования записи для start_date
+    # Check for the existence of an entry for start_date
     previous_entry = AccountBalanceHistory.objects.filter(
         account=account, date=start_date).first()
 

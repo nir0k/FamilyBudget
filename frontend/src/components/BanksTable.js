@@ -47,7 +47,6 @@ function BanksTable() {
     const handleSave = async (bankData) => {
         try {
             if (selectedBank) {
-                // Обновить банк
                 const updatedBank = await updateBank(selectedBank.id, bankData, authToken);
                 setBanks((prevBanks) =>
                     prevBanks.map((bank) =>
@@ -55,7 +54,6 @@ function BanksTable() {
                     )
                 );
             } else {
-                // Добавить новый банк
                 const newBank = await addBank(bankData, authToken);
                 setBanks([...banks, newBank]);
             }

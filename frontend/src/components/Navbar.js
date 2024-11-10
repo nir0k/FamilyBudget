@@ -84,7 +84,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={() => navigate('/transactions')}>{t('transactions')}</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setShowCategoriesOffcanvas(true)}>{t('category')}</Dropdown.Item> {/* Открытие Offcanvas для категорий */}
+                        <Dropdown.Item onClick={() => setShowCategoriesOffcanvas(true)}>{t('category')}</Dropdown.Item> {/* Opening Offcanvas for categories */}
                     </Dropdown.Menu>
                 </Dropdown>
 
@@ -152,38 +152,38 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                     )}
                 </div>
 
-                {/* Offcanvas для отображения информации о пользователе */}
+                {/* Offcanvas for displaying user information */}
                 <UserInfoOffcanvas
                     show={showUserOffcanvas}
                     handleClose={() => setShowUserOffcanvas(false)}
                     userData={userData}
                 />
 
-                {/* Offcanvas для отображения валют */}
+                {/* Offcanvas for displaying currencies */}
                 <CurrencyOffcanvas
                     show={showCurrencyOffcanvas}
                     handleClose={() => setShowCurrencyOffcanvas(false)}
                 />
 
-                {/* Offcanvas для отображения банков */}
+                {/* Offcanvas for displaying banks */}
                 <BanksOffcanvas
                     show={showBanksOffcanvas}
                     handleClose={() => setShowBanksOffcanvas(false)}
                 />
 
-                {/* Offcanvas для отображения типов счетов */}
+                {/* Offcanvas for displaying account types */}
                 <AccountTypesOffcanvas
                     show={showAccountTypesOffcanvas}
                     handleClose={() => setShowAccountTypesOffcanvas(false)}
                 />
 
-                {/* Offcanvas для отображения счетов */}
+                {/* Offcanvas for displaying accounts */}
                 <AccountsOffcanvas
                     show={showAccountsOffcanvas}
                     handleClose={() => setShowAccountsOffcanvas(false)}
                 />
 
-                {/* Offcanvas для отображения категорий */}
+                {/* Offcanvas for displaying categories */}
                 <CategoriesOffcanvas
                     show={showCategoriesOffcanvas}
                     handleClose={() => setShowCategoriesOffcanvas(false)}

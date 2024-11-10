@@ -29,7 +29,7 @@ function App() {
     return (
         <Router>
             <div className={`${isDarkTheme ? 'bg-dark text-light' : 'bg-light text-dark'} min-vh-100 d-flex flex-column`}>
-                <ToastContainer position="top-right" autoClose={3000} /> {/* Добавлено */}
+                <ToastContainer position="top-right" autoClose={3000} />
                 <Navbar isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />
                 
                 <div className="container py-4 flex-grow-1">

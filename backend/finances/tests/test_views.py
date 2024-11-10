@@ -188,7 +188,7 @@ def test_account_viewset_delete_permission_denied(client, user, another_user):
 def test_account_balance_history_view(client, user, account):
     client.force_authenticate(user=user)
 
-    # Создаем несколько записей истории баланса
+    # Create several balance history records
     AccountBalanceHistory.objects.create(
         account=account, balance=Decimal("1000.00"), date=timezone.now())
     AccountBalanceHistory.objects.create(
