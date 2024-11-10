@@ -82,5 +82,7 @@
   "endDate": "Дата окончания",
   "selectAccounts": "Выберите счета",
   "overallBalance": "Общий баланс",
-  "showCombinedChart": "Показать общий график"
+  "showCombinedChart": "Показать общий график",
+  "noDataAvailable": "Нет данных за выбранный период.",
+  "noDataForAccounts": "Нет данных для следующих счетов"
 }

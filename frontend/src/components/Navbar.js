@@ -13,6 +13,14 @@ import CategoriesOffcanvas from './CategoriesOffcanvas';
 import { useTranslation } from 'react-i18next';
 import { fetchUserData } from '../api';
 
+const languages = [
+    { code: 'en', name: 'English' },
+    { code: 'es', name: 'Español' },
+    { code: 'hu', name: 'Magyar' },
+    { code: 'ru', name: 'Русский' },
+];
+const sortedLanguages = languages.sort((a, b) => a.name.localeCompare(b.name));
+
 function Navbar({ isDarkTheme, toggleTheme }) {
     const { i18n, t } = useTranslation();
     const navigate = useNavigate();
@@ -118,9 +126,11 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            <Dropdown.Item onClick={() => handleLanguageChange('en')}>English</Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleLanguageChange('ru')}>Русский</Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleLanguageChange('hu')}>Magyar</Dropdown.Item>
+                            {sortedLanguages.map((lang) => (
+                                <Dropdown.Item key={lang.code} onClick={() => handleLanguageChange(lang.code)}>
+                                    {lang.name}
+                                </Dropdown.Item>
+                            ))}
                         </Dropdown.Menu>
                     </Dropdown>
 

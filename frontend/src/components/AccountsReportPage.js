@@ -61,6 +61,8 @@ function AccountsReportPage() {
             try {
                 const promises = selectedAccounts.map(accountId =>
                     fetchAccountBalanceHistory(accountId, authToken, startDate, endDate)
+                        .then(data => ({ accountId, data }))
+                        .catch(() => ({ accountId, data: [] }))
                 );
                 const results = await Promise.all(promises);
                 setBalanceHistory(results);
@@ -74,20 +76,23 @@ function AccountsReportPage() {
         handleFetchBalanceHistory();
     }, [handleFetchBalanceHistory]);
 
+    const accountsWithData = balanceHistory.filter(history => history.data.length > 0);
+    const accountsWithoutData = balanceHistory.filter(history => history.data.length === 0);
+
     const chartData = {
-        labels: balanceHistory.length > 0 ? balanceHistory[0].map(entry => entry.date) : [],
+        labels: accountsWithData.length > 0 ? accountsWithData[0].data.map(entry => entry.date) : [],
         datasets: showCombinedChart
             ? [{
                 label: t('combinedBalance'),
-                data: balanceHistory[0].map((_, idx) =>
-                    balanceHistory.reduce((sum, history) => sum + history[idx].balance, 0)
+                data: accountsWithData[0].data.map((_, idx) =>
+                    accountsWithData.reduce((sum, history) => sum + (history.data[idx]?.balance || 0), 0)
                 ),
                 borderColor: 'hsl(0, 70%, 50%)',
                 fill: false
             }]
-            : balanceHistory.map((history, index) => ({
-                label: accounts.find(acc => acc.id === selectedAccounts[index])?.name || `Account ${selectedAccounts[index]}`,
-                data: history.map(entry => entry.balance),
+            : accountsWithData.map((history, index) => ({
+                label: accounts.find(acc => acc.id === history.accountId)?.name || `Account ${history.accountId}`,
+                data: history.data.map(entry => entry.balance),
                 borderColor: `hsl(${index * 60}, 70%, 50%)`,
                 fill: false
             }))
@@ -124,8 +129,15 @@ function AccountsReportPage() {
                 </Form.Group>
                 <Button onClick={handleFetchBalanceHistory}>{t('showReport')}</Button>
             </Form>
-            {balanceHistory.length > 0 && (
+            {accountsWithData.length > 0 ? (
                 <Line data={chartData} />
+            ) : (
+                <p>{t('noDataAvailable')}</p>
+            )}
+            {accountsWithoutData.length > 0 && (
+                <div className="mt-3">
+                    <p>{t('noDataForAccounts')}: {accountsWithoutData.map(history => accounts.find(acc => acc.id === history.accountId)?.name || `Account ${history.accountId}`).join(', ')}</p>
+                </div>
             )}
         </div>
     );

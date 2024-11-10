@@ -82,5 +82,7 @@
   "endDate": "End Date",
   "selectAccounts": "Select Accounts",
   "overallBalance": "Overall Balance",
-  "showCombinedChart": "Show Combined Chart"
+  "showCombinedChart": "Show Combined Chart",
+  "noDataAvailable": "No data available for the selected period.",
+  "noDataForAccounts": "No data available for the following accounts"
 }

@@ -82,5 +82,7 @@
   "endDate": "Záró dátum",
   "selectAccounts": "Válassza ki a számlákat",
   "overallBalance": "Összesített egyenleg",
-  "showCombinedChart": "Összesített diagram megjelenítése"
+  "showCombinedChart": "Összesített diagram megjelenítése",
+  "noDataAvailable": "Nincsenek adatok a kiválasztott időszakra.",
+  "noDataForAccounts": "Nincsenek adatok a következő számlákhoz"
 }
