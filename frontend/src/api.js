@@ -466,5 +466,23 @@ export const addCategory = async (category, type, token) => {
     return response.data;
 };
 
+/**
+ * Получает историю баланса счета с API.
+ *
+ * @param {number} accountId - ID счета.
+ * @param {string} token - Токен аутентификации.
+ * @param {string} startDate - Начальная дата.
+ * @param {string} endDate - Конечная дата.
+ * @returns {Promise<Array>} История баланса счета.
+ */
+export const fetchAccountBalanceHistory = async (accountId, token, startDate, endDate) => {
+    const response = await api.get(`/accounts/${accountId}/balance-history/`, {
+        params: { start_date: startDate, end_date: endDate },
+        headers: {
+            'Authorization': `Token ${token}`
+        }
+    });
+    return response.data;
+};
 
 export default api;

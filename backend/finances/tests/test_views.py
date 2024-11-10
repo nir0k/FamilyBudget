@@ -1,6 +1,9 @@
+from decimal import Decimal
+
 import pytest
 from django.contrib.auth import get_user_model
-from finances.models import Account, AccountType, Bank, Currency
+from django.utils import timezone
+from finances.models import Account, AccountBalanceHistory, AccountType, Bank, Currency
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -15,7 +18,26 @@ def client():
 @pytest.fixture
 def user():
     return User.objects.create_user(
-        username="testuser", password="password", email="testuser@test.com")
+        username="testuser", password="password", email="testuser@test.com"
+    )
+
+
+@pytest.fixture
+def account(user):
+    currency = Currency.objects.create(
+        name="Dollar", code="USD", symbol="$", owner=user
+    )
+    account_type = AccountType.objects.create(name="Savings", owner=user)
+    bank = Bank.objects.create(name="Test Bank", country="Test Country", owner=user)
+
+    return Account.objects.create(
+        name="Main Account",
+        account_type=account_type,
+        bank=bank,
+        balance=Decimal("1000.00"),
+        currency=currency,
+        owner=user
+    )
 
 
 @pytest.fixture
@@ -160,3 +182,20 @@ def test_account_viewset_delete_permission_denied(client, user, another_user):
     response = client.delete(f"/api/v1/accounts/{account.id}/")
     assert response.status_code == status.HTTP_404_NOT_FOUND, \
         f"Expected 404, got {response.status_code} instead"
+
+
+@pytest.mark.django_db
+def test_account_balance_history_view(client, user, account):
+    client.force_authenticate(user=user)
+
+    # Создаем несколько записей истории баланса
+    AccountBalanceHistory.objects.create(
+        account=account, balance=Decimal("1000.00"), date=timezone.now())
+    AccountBalanceHistory.objects.create(
+        account=account, balance=Decimal("1200.00"), date=timezone.now())
+
+    response = client.get(f"/api/v1/accounts/{account.id}/balance-history/")
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 2
+    assert response.data[0]["balance"] == Decimal("1000.00")
+    assert response.data[1]["balance"] == Decimal("1200.00")

@@ -88,6 +88,17 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                     </Dropdown.Menu>
                 </Dropdown>
 
+                {/* Reports Dropdown */}
+                <Dropdown align="end" className="ms-2">
+                    <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
+                        {t('reports')}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => navigate('/reports/accounts')}>{t('accountsReport')}</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+
 
                 <div className="d-flex align-items-center ms-auto">
                     <button
@@ -109,7 +120,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                         <Dropdown.Menu>
                             <Dropdown.Item onClick={() => handleLanguageChange('en')}>English</Dropdown.Item>
                             <Dropdown.Item onClick={() => handleLanguageChange('ru')}>Русский</Dropdown.Item>
-                            <Dropdown.Item onClick={() => handleLanguageChange('hu')}>Hungary</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleLanguageChange('hu')}>Magyar</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
 

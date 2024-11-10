@@ -3,8 +3,10 @@
 from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Account, AccountType, Bank, Currency
+from .models import Account, AccountBalanceHistory, AccountType, Bank, Currency
 from .serializers import (
     AccountSerializer,
     AccountTypeSerializer,
@@ -106,3 +108,19 @@ class AccountViewSet(viewsets.ModelViewSet):
         if instance.owner != self.request.user:
             raise PermissionDenied("You do not have permission to delete this account.")
         instance.delete()
+
+
+class AccountBalanceHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, account_id):
+        history = AccountBalanceHistory.objects.filter(
+            account__id=account_id, account__owner=request.user)
+        response_data = [
+            {
+                'date': entry.date,
+                'balance': entry.balance
+            }
+            for entry in history
+        ]
+        return Response(response_data)

@@ -139,3 +139,13 @@ class Account(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class AccountBalanceHistory(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    date = models.DateField()
+    balance = models.DecimalField(max_digits=10, decimal_places=2)
+
+    class Meta:
+        verbose_name = "Account Balance History"
+        ordering = ['date']

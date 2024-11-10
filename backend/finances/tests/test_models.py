@@ -1,6 +1,9 @@
+from decimal import Decimal
+
 import pytest
 from django.contrib.auth import get_user_model
-from finances.models import Account, AccountType, Bank, Currency
+from django.utils import timezone
+from finances.models import Account, AccountBalanceHistory, AccountType, Bank, Currency
 
 User = get_user_model()
 
@@ -11,6 +14,24 @@ def user():
         username="testuser",
         password="password",
         email="testuser@test.com"
+    )
+
+
+@pytest.fixture
+def account(user):
+    currency = Currency.objects.create(
+        name="Dollar", code="USD", symbol="$", owner=user
+    )
+    account_type = AccountType.objects.create(name="Savings", owner=user)
+    bank = Bank.objects.create(name="Test Bank", country="Test Country", owner=user)
+
+    return Account.objects.create(
+        name="Main Account",
+        account_type=account_type,
+        bank=bank,
+        balance=Decimal("1000.00"),
+        currency=currency,
+        owner=user
     )
 
 
@@ -97,3 +118,21 @@ def test_account_unique_together_constraint(user):
             balance=3000.00,
             owner=user
         )
+
+
+@pytest.mark.django_db
+def test_account_balance_history_creation(user, account):
+    initial_balance = account.balance
+    test_date = timezone.now().date()  # Указываем текущую дату
+
+    # Создаем запись о балансе с явной датой
+    history_entry = AccountBalanceHistory.objects.create(
+        account=account,
+        date=test_date,
+        balance=initial_balance
+    )
+
+    assert history_entry.account == account
+    assert history_entry.balance == initial_balance
+    assert str(history_entry.balance) == str(initial_balance)
+    assert history_entry.date == test_date  # Проверка даты
