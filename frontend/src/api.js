@@ -364,4 +364,107 @@ export const deleteAccount = async (id, token) => {
     });
 };
 
+/**
+ * Получает список расходов с API.
+ *
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Array>} Список расходов.
+ */
+export const fetchExpenses = async (token) => {
+    const response = await api.get('/expenses/', {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Получает список доходов с API.
+ *
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Array>} Список доходов.
+ */
+export const fetchIncomes = async (token) => {
+    const response = await api.get('/incomes/', {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+    return response.data;
+};
+
+/**
+ * Получает список категорий дохода с API.
+ *
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Array>} Список категорий дохода.
+ */
+export const fetchIncomeCategories = async (token) => {
+    const response = await api.get('/incomeCategories/', {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return response.data;
+};
+
+/**
+ * Получает список категорий расхода с API.
+ *
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Array>} Список категорий расхода.
+ */
+export const fetchExpenseCategories = async (token) => {
+    const response = await api.get('/expenseCategories/', {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return response.data;
+};
+
+/**
+ * Обновляет категорию в API.
+ *
+ * @param {Object} category - Объект категории для обновления.
+ * @param {string} type - Тип категории ('income' или 'expense').
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<void>} Промис, который выполняется после успешного обновления категории.
+ */
+export const updateCategory = async (category, type, token) => {
+    const endpoint = type === 'income' ? '/incomeCategories/' : '/expenseCategories/';
+    await api.put(`${endpoint}${category.id}/`, category, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+};
+
+/**
+ * Удаляет категорию по ее ID с API.
+ *
+ * @param {number} categoryId - Идентификатор категории для удаления.
+ * @param {string} type - Тип категории ('income' или 'expense').
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<void>} Промис, который выполняется после успешного удаления категории.
+ */
+export const deleteCategory = async (categoryId, type, token) => {
+    const endpoint = type === 'income' ? '/incomeCategories/' : '/expenseCategories/';
+    await api.delete(`${endpoint}${categoryId}/`, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+};
+
+/**
+ * Добавляет новую категорию в API.
+ *
+ * @param {Object} category - Объект новой категории.
+ * @param {string} type - Тип категории ('income' или 'expense').
+ * @param {string} token - Токен аутентификации.
+ * @returns {Promise<Object>} Промис, который возвращает добавленную категорию.
+ */
+export const addCategory = async (category, type, token) => {
+    const endpoint = type === 'income' ? '/incomeCategories/' : '/expenseCategories/';
+    const response = await api.post(endpoint, category, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return response.data;
+};
+
+
 export default api;

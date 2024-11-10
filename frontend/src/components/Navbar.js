@@ -9,6 +9,7 @@ import CurrencyOffcanvas from './CurrencyOffcanvas';
 import BanksOffcanvas from './BanksOffcanvas';
 import AccountTypesOffcanvas from './AccountTypesOffcanvas';
 import AccountsOffcanvas from './AccountsOffcanvas';
+import CategoriesOffcanvas from './CategoriesOffcanvas';
 import { useTranslation } from 'react-i18next';
 import { fetchUserData } from '../api';
 
@@ -23,6 +24,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
     const [showBanksOffcanvas, setShowBanksOffcanvas] = useState(false);
     const [showAccountTypesOffcanvas, setShowAccountTypesOffcanvas] = useState(false);
     const [showAccountsOffcanvas, setShowAccountsOffcanvas] = useState(false);
+    const [showCategoriesOffcanvas, setShowCategoriesOffcanvas] = useState(false);
     const [userData, setUserData] = useState({});
     const [currentLang, setCurrentLang] = useState(i18n.language);
 
@@ -68,14 +70,24 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={() => setShowAccountsOffcanvas(true)}>{t('accounts')}</Dropdown.Item>
-                        {/* <Dropdown.Item>{t('accounts')}</Dropdown.Item> */}
-                        {/* <Dropdown.Item>{t('accountTypes')}</Dropdown.Item> */}
                         <Dropdown.Item onClick={() => setShowAccountTypesOffcanvas(true)}>{t('accountTypes')}</Dropdown.Item>
-                        {/* <Dropdown.Item>{t('banks')}</Dropdown.Item> */}
                         <Dropdown.Item onClick={() => setShowBanksOffcanvas(true)}>{t('banks')}</Dropdown.Item>
                         <Dropdown.Item onClick={() => setShowCurrencyOffcanvas(true)}>{t('currency')}</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
+
+                {/* Transactions Dropdown */}
+                <Dropdown align="end" className="ms-2">
+                    <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
+                        {t('transactions')}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => navigate('/transactions')}>{t('transactions')}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setShowCategoriesOffcanvas(true)}>{t('category')}</Dropdown.Item> {/* Открытие Offcanvas для категорий */}
+                    </Dropdown.Menu>
+                </Dropdown>
+
 
                 <div className="d-flex align-items-center ms-auto">
                     <button
@@ -97,6 +109,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                         <Dropdown.Menu>
                             <Dropdown.Item onClick={() => handleLanguageChange('en')}>English</Dropdown.Item>
                             <Dropdown.Item onClick={() => handleLanguageChange('ru')}>Русский</Dropdown.Item>
+                            <Dropdown.Item onClick={() => handleLanguageChange('hu')}>Hungary</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
 
@@ -159,8 +172,11 @@ function Navbar({ isDarkTheme, toggleTheme }) {
                     handleClose={() => setShowAccountsOffcanvas(false)}
                 />
 
-
-
+                {/* Offcanvas для отображения категорий */}
+                <CategoriesOffcanvas
+                    show={showCategoriesOffcanvas}
+                    handleClose={() => setShowCategoriesOffcanvas(false)}
+                />
             </div>
         </nav>
     );
