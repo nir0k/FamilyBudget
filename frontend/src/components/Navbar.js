@@ -104,6 +104,8 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={() => navigate('/reports/accounts')}>{t('accountsReport')}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => navigate('/reports/transactions')}>{t('transactionsReport')}</Dropdown.Item>
+                        <Dropdown.Item onClick={() => navigate('/reports/ExpenseBalance')}>{t('expenseBalanceReport')}</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
 

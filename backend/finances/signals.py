@@ -56,27 +56,27 @@ def update_future_balances(account, start_date):
     future_entries = AccountBalanceHistory.objects.filter(
         account=account, date__gt=start_date).order_by('date')
 
-    # Check for the existence of an entry for start_date
     previous_entry = AccountBalanceHistory.objects.filter(
         account=account, date=start_date).first()
 
-    if not previous_entry:
-        previous_balance = account.balance
-    else:
-        previous_balance = previous_entry.balance
+    previous_balance = previous_entry.balance if previous_entry else account.balance
 
     for entry in future_entries:
+        # Получаем разницу от предыдущей записи
         entry.balance = previous_balance
         entry.save()
-        previous_balance = entry.balance
+        previous_balance = entry.balance  # Обновляем для следующей записи
 
 
 @receiver(post_save, sender=Expense)
 @receiver(post_save, sender=Income)
 def log_balance_history(sender, instance, **kwargs):
     account = instance.account
+    # Обновляем или создаем запись баланса на дату транзакции
     AccountBalanceHistory.objects.update_or_create(
         account=account,
         date=instance.date.date(),
         defaults={'balance': account.balance}
     )
+    # Обновляем будущие записи баланса после текущей транзакции
+    update_future_balances(account, instance.date.date())

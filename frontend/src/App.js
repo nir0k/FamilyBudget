@@ -6,6 +6,8 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import TransactionsPage from './components/TransactionsPage';
 import AccountsReportPage from './components/AccountsReportPage';
+import TransactionsReportPage from './components/TransactionsReportPage';
+import ExpenseBalanceReportPage from './components/ExpenseBalanceReportPage';
 import { ToastContainer } from 'react-toastify';
 import './i18n';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -38,6 +40,8 @@ function App() {
                         <Route path="/" element={isAuthenticated ? <div>Welcome to Dashboard</div> : <Navigate to="/login" />} />
                         <Route path="/transactions" element={<TransactionsPage />} />
                         <Route path="/reports/accounts" element={<AccountsReportPage />} />
+                        <Route path="/reports/transactions" element={<TransactionsReportPage />} />
+                        <Route path="/reports/ExpenseBalance" element={<ExpenseBalanceReportPage />} />
                     </Routes>
                 </div>
                 

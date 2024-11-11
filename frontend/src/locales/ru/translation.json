@@ -84,5 +84,9 @@
   "overallBalance": "Общий баланс",
   "showCombinedChart": "Показать общий график",
   "noDataAvailable": "Нет данных за выбранный период.",
-  "noDataForAccounts": "Нет данных для следующих счетов"
+  "noDataForAccounts": "Нет данных для следующих счетов",
+  "expenseBalanceReport": "Отчет по расходам и балансу",
+  "selectExpenseCategories": "Выберите категории расходов",
+  "selectIncomeCategories": "Выберите категории доходов",
+  "noDataForSelectedCategories": "Нет данных для выбранных категорий"
 }
