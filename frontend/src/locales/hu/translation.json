@@ -84,5 +84,9 @@
   "overallBalance": "Összesített egyenleg",
   "showCombinedChart": "Összesített diagram megjelenítése",
   "noDataAvailable": "Nincsenek adatok a kiválasztott időszakra.",
-  "noDataForAccounts": "Nincsenek adatok a következő számlákhoz"
+  "noDataForAccounts": "Nincsenek adatok a következő számlákhoz",
+  "expenseBalanceReport": "Kiadások és egyenleg jelentés",
+  "selectExpenseCategories": "Válassza ki a kiadási kategóriákat",
+  "selectIncomeCategories": "Válassza ki a jövedelmi kategóriákat",
+  "noDataForSelectedCategories": "Nincs adat a kiválasztott kategóriákhoz"
 }

@@ -60,8 +60,16 @@ function AccountsReportPage() {
         if (selectedAccounts.length > 0 && startDate && endDate) {
             try {
                 const promises = selectedAccounts.map(accountId =>
-                    fetchAccountBalanceHistory(accountId, authToken, startDate, endDate)
-                        .then(data => ({ accountId, data }))
+                    fetchAccountBalanceHistory(accountId, authToken)
+                        .then(data => ({
+                            accountId,
+                            data: data.filter(entry => {
+                                const entryDate = new Date(entry.date);
+                                const startDateTime = new Date(startDate);
+                                const endDateTime = new Date(new Date(endDate).setHours(23, 59, 59, 999)); // Устанавливаем конец дня для корректной фильтрации
+                                return entryDate >= startDateTime && entryDate <= endDateTime;
+                            })
+                        }))
                         .catch(() => ({ accountId, data: [] }))
                 );
                 const results = await Promise.all(promises);
@@ -71,6 +79,7 @@ function AccountsReportPage() {
             }
         }
     }, [selectedAccounts, startDate, endDate, authToken]);
+    
 
     useEffect(() => {
         handleFetchBalanceHistory();

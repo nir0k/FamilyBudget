@@ -84,5 +84,11 @@
   "overallBalance": "Overall Balance",
   "showCombinedChart": "Show Combined Chart",
   "noDataAvailable": "No data available for the selected period.",
-  "noDataForAccounts": "No data available for the following accounts"
+  "noDataForAccounts": "No data available for the following accounts",
+  "transactionsReport": "Transactions Report",
+  "expenseBalanceReport": "Expense and Balance Report",
+  "selectExpenseCategories": "Select Expense Categories",
+  "selectIncomeCategories": "Select Income Categories",
+  "noDataForSelectedCategories": "No data available for selected categories"
+
 }
