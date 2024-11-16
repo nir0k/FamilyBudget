@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Form } from 'react-bootstrap';
+import { Table, Form, Pagination, Dropdown, ButtonGroup } from 'react-bootstrap';
 import { fetchExpenses, fetchIncomes, fetchCurrencies, fetchExpenseCategories, fetchIncomeCategories, fetchAccounts } from '../api';
 import { useTranslation } from 'react-i18next';
 import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
@@ -10,23 +10,26 @@ function TransactionsPage() {
     const [filteredTransactions, setFilteredTransactions] = useState([]);
     const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
     const [filter, setFilter] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [rowsPerPage, setRowsPerPage] = useState(15);
+    const [totalPages, setTotalPages] = useState(0);
     const authToken = localStorage.getItem('authToken');
 
     const [currencies, setCurrencies] = useState({});
     const [categories, setCategories] = useState({});
     const [accounts, setAccounts] = useState({});
 
+    // Load initial data (currencies, categories, accounts)
     useEffect(() => {
-        const loadData = async () => {
+        const loadInitialData = async () => {
             try {
                 const [currencyData, expenseCategoryData, incomeCategoryData, accountData] = await Promise.all([
                     fetchCurrencies(authToken),
                     fetchExpenseCategories(authToken),
                     fetchIncomeCategories(authToken),
-                    fetchAccounts(authToken)
+                    fetchAccounts(authToken),
                 ]);
 
-                // Create objects for quick access by ID
                 const currencyMap = currencyData.reduce((map, currency) => {
                     map[currency.id] = currency.code;
                     return map;
@@ -44,27 +47,65 @@ function TransactionsPage() {
                     return map;
                 }, {});
                 setAccounts(accountMap);
-
-                const [expenses, incomes] = await Promise.all([
-                    fetchExpenses(authToken),
-                    fetchIncomes(authToken)
-                ]);
-
-                const combinedTransactions = [
-                    ...expenses.map(tx => ({ ...tx, type: 'expense' })),
-                    ...incomes.map(tx => ({ ...tx, type: 'income' }))
-                ];
-                combinedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                setTransactions(combinedTransactions);
-                setFilteredTransactions(combinedTransactions);
             } catch (error) {
-                console.error('Failed to fetch transactions or related data:', error);
+                console.error('Failed to fetch initial data:', error);
             }
         };
-        loadData();
+
+        loadInitialData();
     }, [authToken]);
 
+    useEffect(() => {
+        const loadTransactions = async () => {
+            try {
+                // First, fetch counts
+                const [expenseCountData, incomeCountData] = await Promise.all([
+                    fetchExpenses(authToken, 0, 0), // Fetch with limit 0 to get count
+                    fetchIncomes(authToken, 0, 0),
+                ]);
+    
+                const totalExpenses = expenseCountData.count;
+                const totalIncomes = incomeCountData.count;
+                const totalTransactions = totalExpenses + totalIncomes;
+    
+                // Calculate proportions
+                const expenseProportion = totalExpenses / totalTransactions || 0.5;
+                const incomeProportion = totalIncomes / totalTransactions || 0.5;
+    
+                // Calculate limits
+                const expenseLimit = Math.round(rowsPerPage * expenseProportion);
+                const incomeLimit = Math.round(rowsPerPage * incomeProportion);
+    
+                // Calculate offsets
+                const expenseOffset = (currentPage - 1) * expenseLimit;
+                const incomeOffset = (currentPage - 1) * incomeLimit;
+    
+                // Fetch data with calculated limits
+                const [expenseData, incomeData] = await Promise.all([
+                    fetchExpenses(authToken, expenseOffset, expenseLimit),
+                    fetchIncomes(authToken, incomeOffset, incomeLimit),
+                ]);
+    
+                // Combine and sort transactions
+                const combinedTransactions = [
+                    ...expenseData.results.map(tx => ({ ...tx, type: 'expense' })),
+                    ...incomeData.results.map(tx => ({ ...tx, type: 'income' })),
+                ].sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+                setTransactions(combinedTransactions);
+                setFilteredTransactions(combinedTransactions);
+                setTotalPages(Math.ceil(totalTransactions / rowsPerPage));
+            } catch (error) {
+                console.error('Failed to fetch transactions:', error);
+            }
+        };
+    
+        loadTransactions();
+    }, [authToken, currentPage, rowsPerPage]);
+    
+    
+
+    // Handle sorting
     const handleSort = (key) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -72,7 +113,7 @@ function TransactionsPage() {
         }
         setSortConfig({ key, direction });
 
-        const sortedTransactions = [...transactions].sort((a, b) => {
+        const sortedTransactions = [...filteredTransactions].sort((a, b) => {
             let aValue = a[key];
             let bValue = b[key];
 
@@ -99,29 +140,62 @@ function TransactionsPage() {
         return <FaSort />;
     };
 
+    // Handle filtering
     const handleFilterChange = (event) => {
         const value = event.target.value.toLowerCase();
         setFilter(value);
-        setFilteredTransactions(
-            transactions.filter(tx => {
-                const dateStr = new Date(tx.date).toLocaleDateString().toLowerCase();
-                const timeStr = new Date(tx.date).toLocaleTimeString().toLowerCase();
-                const typeStr = tx.type === 'income' ? t('income').toLowerCase() : t('expense').toLowerCase();
-                const currencyName = currencies[tx.currency] ? currencies[tx.currency].toLowerCase() : '';
-                const categoryName = categories[tx.category] ? categories[tx.category].toLowerCase() : '';
-                const accountName = accounts[tx.account] ? accounts[tx.account].toLowerCase() : '';
 
-                return (
-                    tx.description.toLowerCase().includes(value) ||
-                    accountName.includes(value) ||
-                    tx.amount.toString().includes(value) ||
-                    currencyName.includes(value) ||
-                    categoryName.includes(value) ||
-                    dateStr.includes(value) ||
-                    timeStr.includes(value) ||
-                    typeStr.includes(value)
-                );
-            })
+        const filteredData = transactions.filter((tx) => {
+            const dateStr = new Date(tx.date).toLocaleDateString().toLowerCase();
+            const timeStr = new Date(tx.date).toLocaleTimeString().toLowerCase();
+            const typeStr = tx.type === 'income' ? t('income').toLowerCase() : t('expense').toLowerCase();
+            const currencyName = currencies[tx.currency]?.toLowerCase() || '';
+            const categoryName = categories[tx.category]?.toLowerCase() || '';
+            const accountName = accounts[tx.account]?.toLowerCase() || '';
+
+            return (
+                tx.description.toLowerCase().includes(value) ||
+                accountName.includes(value) ||
+                tx.amount.toString().includes(value) ||
+                currencyName.includes(value) ||
+                categoryName.includes(value) ||
+                dateStr.includes(value) ||
+                timeStr.includes(value) ||
+                typeStr.includes(value)
+            );
+        });
+
+        setFilteredTransactions(filteredData);
+    };
+
+    // Handle pagination
+    const handleRowsPerPageChange = (value) => {
+        setRowsPerPage(value);
+        setCurrentPage(1); // Reset to the first page
+    };
+
+    const renderPagination = () => {
+        const items = [];
+        for (let number = 1; number <= totalPages; number++) {
+            items.push(
+                <Pagination.Item
+                    key={number}
+                    active={number === currentPage}
+                    onClick={() => setCurrentPage(number)}
+                >
+                    {number}
+                </Pagination.Item>
+            );
+        }
+
+        return (
+            <Pagination>
+                <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1} />
+                <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1} />
+                {items}
+                <Pagination.Next onClick={() => setCurrentPage(currentPage + 1)} disabled={currentPage === totalPages} />
+                <Pagination.Last onClick={() => setCurrentPage(totalPages)} disabled={currentPage === totalPages} />
+            </Pagination>
         );
     };
 
@@ -184,6 +258,19 @@ function TransactionsPage() {
                     })}
                 </tbody>
             </Table>
+            <div className="d-flex justify-content-between align-items-center mt-3">
+                {renderPagination()}
+                <Dropdown as={ButtonGroup}>
+                    <Dropdown.Toggle variant="secondary">{rowsPerPage}</Dropdown.Toggle>
+                    <Dropdown.Menu>
+                        {[15, 30, 50, 100].map((value) => (
+                            <Dropdown.Item key={value} onClick={() => handleRowsPerPageChange(value)}>
+                                {value}
+                            </Dropdown.Item>
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown>
+            </div>
         </div>
     );
 }

@@ -33,6 +33,7 @@ class Currency(models.Model):
     class Meta:
         verbose_name = "Currency"
         unique_together = ["name", "owner"]
+        ordering = ["name"]
 
     def __str__(self):
         return self.code
@@ -57,6 +58,7 @@ class AccountType(models.Model):
     class Meta:
         verbose_name = "Account Type"
         unique_together = ["name", "owner"]
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
@@ -86,6 +88,7 @@ class Bank(models.Model):
     class Meta:
         verbose_name = "Bank"
         unique_together = ["name", "owner"]
+        ordering = ["country", "name"]
 
     def __str__(self):
         return self.name
@@ -136,6 +139,7 @@ class Account(models.Model):
     class Meta:
         verbose_name = "Account"
         unique_together = ["name", "owner"]
+        ordering = ["bank", "name", "currency"]
 
     def __str__(self):
         return self.name
@@ -148,4 +152,4 @@ class AccountBalanceHistory(models.Model):
 
     class Meta:
         verbose_name = "Account Balance History"
-        ordering = ['date']
+        ordering = ['-date']

@@ -20,6 +20,7 @@ function BanksTable() {
     useEffect(() => {
         const loadBanks = async () => {
             try {
+                // Use updated fetchBanks to handle paginated data
                 const data = await fetchBanks(authToken);
                 setBanks(data);
             } catch (error) {
@@ -47,6 +48,7 @@ function BanksTable() {
     const handleSave = async (bankData) => {
         try {
             if (selectedBank) {
+                // Update an existing bank
                 const updatedBank = await updateBank(selectedBank.id, bankData, authToken);
                 setBanks((prevBanks) =>
                     prevBanks.map((bank) =>
@@ -54,6 +56,7 @@ function BanksTable() {
                     )
                 );
             } else {
+                // Add a new bank
                 const newBank = await addBank(bankData, authToken);
                 setBanks([...banks, newBank]);
             }

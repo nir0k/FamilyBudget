@@ -10,6 +10,35 @@ const api = axios.create({
 });
 
 /**
+ * Function to fetch all paginated data from the API.
+ * 
+ * @param {string} url - The initial URL to fetch data from.
+ * @param {string} authToken - The authentication token.
+ * @returns {Promise<Array>} A promise that resolves to an array of all results.
+ */
+async function fetchAllPaginatedData(url, authToken) {
+    const allResults = [];
+    let nextUrl = url;
+
+    while (nextUrl) {
+        const response = await fetch(nextUrl, {
+            headers: {
+                Authorization: `Token ${authToken}`
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch data from ${nextUrl}`);
+        }
+
+        const data = await response.json();
+        allResults.push(...data.results);
+        nextUrl = data.next;
+    }
+
+    return allResults;
+}
+
+/**
  * Logs in a user.
  *
  * @param {string} email - The user's email.
@@ -100,13 +129,9 @@ export const updateUserData = async (data) => {
  * @returns {Promise<Array>} The list of currencies.
  * @throws {Error} If the request fails.
  */
-export const fetchCurrencies = async (token) => {
-    const response = await api.get('/currencies/', {
-        headers: {
-            'Authorization': `Token ${token}`,
-        },
-    });
-    return response.data;
+export const fetchCurrencies = async (authToken) => {
+    const initialUrl = `${API_BASE_URL}/currencies/?limit=50`;
+    return await fetchAllPaginatedData(initialUrl, authToken);
 };
 
 /**
@@ -167,13 +192,9 @@ export const deleteCurrency = async (id, token) => {
  * @returns {Promise<Array>} The list of banks.
  * @throws {Error} If the request fails.
  */
-export const fetchBanks = async (token) => {
-    const response = await api.get('/banks/', {
-        headers: {
-            'Authorization': `Token ${token}`,
-        },
-    });
-    return response.data;
+export const fetchBanks = async (authToken) => {
+    const initialUrl = `${API_BASE_URL}/banks/?limit=50`;
+    return await fetchAllPaginatedData(initialUrl, authToken);
 };
 
 /**
@@ -234,13 +255,9 @@ export const deleteBank = async (id, token) => {
  * @returns {Promise<Array>} The list of account types.
  * @throws {Error} If the request fails.
  */
-export const fetchAccountTypes = async (token) => {
-    const response = await api.get('/accountTypes/', {
-        headers: {
-            'Authorization': `Token ${token}`,
-        },
-    });
-    return response.data;
+export const fetchAccountTypes = async (authToken) => {
+    const initialUrl = `${API_BASE_URL}/accountTypes/?limit=50`;
+    return await fetchAllPaginatedData(initialUrl, authToken);
 };
 
 /**
@@ -301,13 +318,9 @@ export const deleteAccountType = async (id, token) => {
  * @returns {Promise<Array>} The list of accounts.
  * @throws {Error} If the request fails.
  */
-export const fetchAccounts = async (token) => {
-    const response = await api.get('/accounts/', {
-        headers: {
-            'Authorization': `Token ${token}`,
-        },
-    });
-    return response.data;
+export const fetchAccounts = async (authToken) => {
+    const initialUrl = `${API_BASE_URL}/accounts/?limit=50`;
+    return await fetchAllPaginatedData(initialUrl, authToken);
 };
 
 /**
@@ -361,35 +374,64 @@ export const deleteAccount = async (id, token) => {
     });
 };
 
-/**
- * Fetches the list of expenses from the API.
- *
- * @param {string} token - The authentication token.
- * @returns {Promise<Array>} The list of expenses.
- */
-export const fetchExpenses = async (token) => {
-    const response = await api.get('/expenses/', {
-        headers: {
-            'Authorization': `Token ${token}`,
-        },
-    });
-    return response.data;
-};
+export async function fetchExpenses(authToken, offset = 0, limit = 15) {
+    try {
+        console.log(`Fetching expenses with offset=${offset}, limit=${limit}`);
+        const response = await fetch(`${API_BASE_URL}/expenses/?offset=${offset}&limit=${limit}`, {
+            headers: {
+                Authorization: `Token ${authToken}`,
+            },
+        });
 
-/**
- * Fetches the list of incomes from the API.
- *
- * @param {string} token - The authentication token.
- * @returns {Promise<Array>} The list of incomes.
- */
-export const fetchIncomes = async (token) => {
-    const response = await api.get('/incomes/', {
-        headers: {
-            'Authorization': `Token ${token}`,
-        },
-    });
-    return response.data;
-};
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Failed to fetch expenses:', errorText);
+            throw new Error('Failed to fetch expenses');
+        }
+
+        const data = await response.json();
+        console.log('Fetched expenses:', data);
+
+        return {
+            results: data.results || [],
+            count: data.count || 0,
+        };
+    } catch (error) {
+        console.error('Error in fetchExpenses:', error);
+        throw error;
+    }
+}
+
+
+
+export async function fetchIncomes(authToken, offset = 0, limit = 15) {
+    try {
+        console.log(`Fetching incomes with offset=${offset}, limit=${limit}`);
+        const response = await fetch(`${API_BASE_URL}/incomes/?offset=${offset}&limit=${limit}`, {
+            headers: {
+                Authorization: `Token ${authToken}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Failed to fetch incomes:', errorText);
+            throw new Error('Failed to fetch incomes');
+        }
+
+        const data = await response.json();
+        console.log('Fetched incomes:', data);
+
+        return {
+            results: data.results || [],
+            count: data.count || 0,
+        };
+    } catch (error) {
+        console.error('Error in fetchIncomes:', error);
+        throw error;
+    }
+}
+
 
 /**
  * Fetches the list of income categories from the API.
@@ -397,11 +439,9 @@ export const fetchIncomes = async (token) => {
  * @param {string} token - The authentication token.
  * @returns {Promise<Array>} The list of income categories.
  */
-export const fetchIncomeCategories = async (token) => {
-    const response = await api.get('/incomeCategories/', {
-        headers: { 'Authorization': `Token ${token}` }
-    });
-    return response.data;
+export const fetchIncomeCategories = async (authToken) => {
+    const initialUrl = `${API_BASE_URL}/incomeCategories/?limit=50`; // Указываем лимит
+    return await fetchAllPaginatedData(initialUrl, authToken);
 };
 
 /**
@@ -410,11 +450,9 @@ export const fetchIncomeCategories = async (token) => {
  * @param {string} token - The authentication token.
  * @returns {Promise<Array>} The list of expense categories.
  */
-export const fetchExpenseCategories = async (token) => {
-    const response = await api.get('/expenseCategories/', {
-        headers: { 'Authorization': `Token ${token}` }
-    });
-    return response.data;
+export const fetchExpenseCategories = async (authToken) => {
+    const initialUrl = `${API_BASE_URL}/expenseCategories/?limit=50`; // Указываем лимит
+    return await fetchAllPaginatedData(initialUrl, authToken);
 };
 
 /**
@@ -472,14 +510,9 @@ export const addCategory = async (category, type, token) => {
  * @param {string} endDate - The end date.
  * @returns {Promise<Array>} The account balance history.
  */
-export const fetchAccountBalanceHistory = async (accountId, token, startDate, endDate) => {
-    const response = await api.get(`/accounts/${accountId}/balance-history/`, {
-        params: { start_date: startDate, end_date: endDate },
-        headers: {
-            'Authorization': `Token ${token}`
-        }
-    });
-    return response.data;
+export const fetchAccountBalanceHistory = async (accountId, authToken, startDate, endDate) => {
+    const initialUrl = `${API_BASE_URL}/accounts/${accountId}/balance-history/?limit=50&start_date=${startDate}&end_date=${endDate}`;
+    return await fetchAllPaginatedData(initialUrl, authToken);
 };
 
 export default api;

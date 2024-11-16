@@ -99,7 +99,7 @@ class BaseTransaction(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ["-date"]
+        ordering = ["-date", "category", "account"]
 
     def __str__(self):
         return self.description if self.description else "No description"

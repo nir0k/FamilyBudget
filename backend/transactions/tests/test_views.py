@@ -35,7 +35,7 @@ class ExpenseCategoryViewSetTest(APITestCase):
         ExpenseCategory.objects.create(owner=self.user, **self.category_data)
         response = self.client.get(self.url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
 
     def test_retrieve_expense_category(self):
         category = ExpenseCategory.objects.create(owner=self.user, **self.category_data)
@@ -106,7 +106,7 @@ class IncomeCategoryViewSetTest(APITestCase):
         IncomeCategory.objects.create(owner=self.user, **self.category_data)
         response = self.client.get(self.url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
 
     def test_retrieve_income_category(self):
         category = IncomeCategory.objects.create(owner=self.user, **self.category_data)
@@ -207,7 +207,7 @@ class IncomeViewSetTest(APITestCase):
         })
         response = self.client.get(self.url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
 
     def test_retrieve_income(self):
         income = Income.objects.create(owner=self.user, **{
@@ -314,7 +314,7 @@ class ExpenseViewSetTest(APITestCase):
         })
         response = self.client.get(self.url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data["results"]), 1)
 
     def test_retrieve_expense(self):
         expense = Expense.objects.create(owner=self.user, **{
