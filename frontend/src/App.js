@@ -38,7 +38,7 @@ function App() {
                     <Routes>
                         <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
                         <Route path="/" element={isAuthenticated ? <div>Welcome to Dashboard</div> : <Navigate to="/login" />} />
-                        <Route path="/transactions" element={<TransactionsPage />} />
+                        <Route path="/transactions" element={<TransactionsPage isDarkTheme={isDarkTheme} />} />
                         <Route path="/reports/accounts" element={<AccountsReportPage />} />
                         <Route path="/reports/transactions" element={<TransactionsReportPage />} />
                         <Route path="/reports/ExpenseBalance" element={<ExpenseBalanceReportPage />} />

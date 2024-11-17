@@ -75,3 +75,39 @@ class IncomeSerializer(serializers.ModelSerializer):
         if attrs['category'].owner != user:
             raise ValidationError("You do not have permission to set this category.")
         return attrs
+
+
+class TransactionSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    currency = serializers.PrimaryKeyRelatedField(read_only=True)
+    account = serializers.PrimaryKeyRelatedField(read_only=True)
+    description = serializers.CharField(allow_null=True, allow_blank=True)
+    category = serializers.PrimaryKeyRelatedField(read_only=True)
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
+    transaction_type = serializers.SerializerMethodField()
+
+    def get_date(self, obj):
+        return obj.date.date()
+
+    def get_transaction_type(self, obj):
+        if isinstance(obj, Expense):
+            return 'expense'
+        elif isinstance(obj, Income):
+            return 'income'
+        return None
+
+    def to_representation(self, instance):
+        """
+        Переопределяем метод для динамической обработки экземпляров Expense и Income.
+        """
+        representation = super().to_representation(instance)
+        # Добавляем логическое поле, чтобы различать тип транзакции
+        if isinstance(instance, Expense):
+            representation['transaction_type'] = 'expense'
+            # Дополнительная обработка для Expense, если нужно
+        elif isinstance(instance, Income):
+            representation['transaction_type'] = 'income'
+            # Дополнительная обработка для Income, если нужно
+        return representation

@@ -515,4 +515,27 @@ export const fetchAccountBalanceHistory = async (accountId, authToken, startDate
     return await fetchAllPaginatedData(initialUrl, authToken);
 };
 
+export async function fetchTransactions(authToken, params = {}) {
+    const url = new URL(`${API_BASE_URL}/transactions/transactions/`);
+    Object.keys(params).forEach((key) => {
+        if (params[key] !== undefined) {
+            url.searchParams.append(key, params[key]);
+        }
+    });
+
+    const response = await fetch(url, {
+        headers: {
+            Authorization: `Token ${authToken}`,
+        },
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Failed to fetch transactions:', errorText);
+        throw new Error('Failed to fetch transactions');
+    }
+
+    return response.json();
+}
+
 export default api;

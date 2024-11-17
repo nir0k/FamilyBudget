@@ -12,6 +12,7 @@ from transactions.serializers import (
     ExpenseSerializer,
     IncomeCategorySerializer,
     IncomeSerializer,
+    TransactionSerializer,
 )
 
 User = get_user_model()
@@ -381,3 +382,77 @@ class IncomeSerializerTest(TestCase):
         request = factory.get('/')
         request.user = self.user
         return request
+
+
+class TransactionSerializerTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='testuser', password='password123', email="testuser@test.com"
+        )
+        self.currency = Currency.objects.create(
+            code='USD', name='US Dollar', symbol='$', owner=self.user
+        )
+        self.account_type = AccountType.objects.create(
+            name='Checking', owner=self.user
+        )
+        self.bank = Bank.objects.create(
+            name='Test Bank', country='Testland', owner=self.user
+        )
+        self.account = Account.objects.create(
+            name='Checking',
+            account_type=self.account_type,
+            bank=self.bank,
+            currency=self.currency,
+            balance=1000.00,
+            owner=self.user,
+        )
+        self.expense_category = ExpenseCategory.objects.create(
+            name='Food', owner=self.user
+        )
+        self.income_category = IncomeCategory.objects.create(
+            name='Salary', owner=self.user
+        )
+
+        # Создаем экземпляры Expense и Income
+        self.expense = Expense.objects.create(
+            date=datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+            amount=50.00,
+            currency=self.currency,
+            account=self.account,
+            description='Grocery shopping',
+            category=self.expense_category,
+            owner=self.user
+        )
+        self.income = Income.objects.create(
+            date=datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+            amount=3000.00,
+            currency=self.currency,
+            account=self.account,
+            description='Monthly salary',
+            category=self.income_category,
+            owner=self.user
+        )
+
+    def test_transaction_serializer_with_expense(self):
+        serializer = TransactionSerializer(self.expense)
+        data = serializer.data
+        self.assertEqual(data['id'], self.expense.id)
+        self.assertEqual(data['transaction_type'], 'expense')
+        self.assertEqual(data['amount'], '50.00')
+        self.assertEqual(data['description'], 'Grocery shopping')
+        self.assertEqual(data['currency'], self.currency.id)
+        self.assertEqual(data['account'], self.account.id)
+        self.assertEqual(data['category'], self.expense_category.id)
+        self.assertEqual(data['owner'], self.user.id)
+
+    def test_transaction_serializer_with_income(self):
+        serializer = TransactionSerializer(self.income)
+        data = serializer.data
+        self.assertEqual(data['id'], self.income.id)
+        self.assertEqual(data['transaction_type'], 'income')
+        self.assertEqual(data['amount'], '3000.00')
+        self.assertEqual(data['description'], 'Monthly salary')
+        self.assertEqual(data['currency'], self.currency.id)
+        self.assertEqual(data['account'], self.account.id)
+        self.assertEqual(data['category'], self.income_category.id)
+        self.assertEqual(data['owner'], self.user.id)

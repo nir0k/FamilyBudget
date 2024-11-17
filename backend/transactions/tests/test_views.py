@@ -1,13 +1,20 @@
 # transactions/tests/test_views.py
 
-from datetime import datetime, timezone
+import datetime
 
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.utils import timezone
 from finances.models import Account, AccountType, Bank, Currency
 from rest_framework import status
-from rest_framework.test import APIClient, APITestCase
+from rest_framework.test import (
+    APIClient,
+    APIRequestFactory,
+    APITestCase,
+    force_authenticate,
+)
 from transactions.models import Expense, ExpenseCategory, Income, IncomeCategory
+from transactions.views import CombinedTransactionView
 
 User = get_user_model()
 
@@ -198,7 +205,8 @@ class IncomeViewSetTest(APITestCase):
 
     def test_list_incomes(self):
         Income.objects.create(owner=self.user, **{
-            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+            'date': datetime.datetime(
+                2023, 1, 15, 12, 0, 0, tzinfo=datetime.timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,
@@ -211,7 +219,8 @@ class IncomeViewSetTest(APITestCase):
 
     def test_retrieve_income(self):
         income = Income.objects.create(owner=self.user, **{
-            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+            'date': datetime.datetime(
+                2023, 1, 15, 12, 0, 0, tzinfo=datetime.timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,
@@ -225,7 +234,8 @@ class IncomeViewSetTest(APITestCase):
 
     def test_update_income(self):
         income = Income.objects.create(owner=self.user, **{
-            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+            'date': datetime.datetime(
+                2023, 1, 15, 12, 0, 0, tzinfo=datetime.timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,
@@ -244,7 +254,8 @@ class IncomeViewSetTest(APITestCase):
 
     def test_delete_income(self):
         income = Income.objects.create(owner=self.user, **{
-            'date': datetime(2023, 1, 15, 12, 0, 0, tzinfo=timezone.utc),
+            'date': datetime.datetime(
+                2023, 1, 15, 12, 0, 0, tzinfo=datetime.timezone.utc),
             'amount': 3000.00,
             'currency': self.currency,
             'account': self.account,
@@ -305,7 +316,8 @@ class ExpenseViewSetTest(APITestCase):
 
     def test_list_expenses(self):
         Expense.objects.create(owner=self.user, **{
-            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+            'date': datetime.datetime(
+                2023, 1, 1, 12, 0, 0, tzinfo=datetime.timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,
@@ -318,7 +330,8 @@ class ExpenseViewSetTest(APITestCase):
 
     def test_retrieve_expense(self):
         expense = Expense.objects.create(owner=self.user, **{
-            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+            'date': datetime.datetime(
+                2023, 1, 1, 12, 0, 0, tzinfo=datetime.timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,
@@ -332,7 +345,8 @@ class ExpenseViewSetTest(APITestCase):
 
     def test_update_expense(self):
         expense = Expense.objects.create(owner=self.user, **{
-            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+            'date': datetime.datetime(
+                2023, 1, 1, 12, 0, 0, tzinfo=datetime.timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,
@@ -351,7 +365,8 @@ class ExpenseViewSetTest(APITestCase):
 
     def test_delete_expense(self):
         expense = Expense.objects.create(owner=self.user, **{
-            'date': datetime(2023, 1, 1, 12, 0, 0, tzinfo=timezone.utc),
+            'date': datetime.datetime(
+                2023, 1, 1, 12, 0, 0, tzinfo=datetime.timezone.utc),
             'amount': 50.00,
             'currency': self.currency,
             'account': self.account,
@@ -362,3 +377,159 @@ class ExpenseViewSetTest(APITestCase):
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Expense.objects.filter(id=expense.id).exists())
+
+
+class CombinedTransactionViewTest(APITestCase):
+    def setUp(self):
+        self.factory = APIRequestFactory()
+        self.view = CombinedTransactionView.as_view()
+        self.url = reverse('combined-transactions')
+        self.user = User.objects.create_user(
+            username='testuser', password='password123', email="testuser@test.com"
+        )
+        self.currency = Currency.objects.create(
+            code='USD', name='US Dollar', symbol='$', owner=self.user
+        )
+        self.account_type = AccountType.objects.create(
+            name='Checking', owner=self.user
+        )
+        self.bank = Bank.objects.create(
+            name='Test Bank', country='Testland', owner=self.user
+        )
+        self.account = Account.objects.create(
+            name='Checking',
+            account_type=self.account_type,
+            bank=self.bank,
+            currency=self.currency,
+            balance=1000.00,
+            owner=self.user,
+        )
+        self.expense_category = ExpenseCategory.objects.create(
+            name='Food', owner=self.user
+        )
+        self.income_category = IncomeCategory.objects.create(
+            name='Salary', owner=self.user
+        )
+
+        # Создаем экземпляры Expense и Income
+        self.expense = Expense.objects.create(
+            date=datetime.datetime(2023, 1, 1, 12, 0, 0, tzinfo=datetime.timezone.utc),
+            amount=50.00,
+            currency=self.currency,
+            account=self.account,
+            description='Grocery shopping',
+            category=self.expense_category,
+            owner=self.user
+        )
+        self.income = Income.objects.create(
+            date=datetime.datetime(2023, 1, 15, 12, 0, 0, tzinfo=datetime.timezone.utc),
+            amount=3000.00,
+            currency=self.currency,
+            account=self.account,
+            description='Monthly salary',
+            category=self.income_category,
+            owner=self.user
+        )
+
+    def test_get_combined_transactions(self):
+        request = self.factory.get(self.url)
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 2)
+        results = response.data['results']
+        self.assertEqual(len(results), 2)
+        transaction_ids = [result['id'] for result in results]
+        self.assertIn(self.expense.id, transaction_ids)
+        self.assertIn(self.income.id, transaction_ids)
+
+    def test_filter_by_transaction_type(self):
+        # Фильтруем только расходы
+        request = self.factory.get(self.url, {'transaction_type': 'expense'})
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 1)
+        results = response.data['results']
+        self.assertEqual(results[0]['transaction_type'], 'expense')
+
+        # Фильтруем только доходы
+        request = self.factory.get(self.url, {'transaction_type': 'income'})
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 1)
+        results = response.data['results']
+        self.assertEqual(results[0]['transaction_type'], 'income')
+
+    def test_filter_by_date_range(self):
+        # Фильтрация по диапазону дат
+        request = self.factory.get(self.url, {
+            'datetime_from': '2023-01-01T00:00:00Z',
+            'datetime_to': '2023-01-31T23:59:59Z'
+        })
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 2)
+
+    def test_filter_by_account(self):
+        # Фильтрация по аккаунту
+        request = self.factory.get(self.url, {'account': self.account.id})
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 2)
+
+    def test_filter_by_description(self):
+        # Поиск по описанию
+        request = self.factory.get(self.url, {'description': 'Grocery'})
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['count'], 1)
+        results = response.data['results']
+        self.assertEqual(results[0]['description'], 'Grocery shopping')
+
+    def test_pagination(self):
+        # Создаем дополнительные транзакции для проверки пагинации
+        for i in range(15):
+            Expense.objects.create(
+                date=timezone.now(),  # Используем django.utils.timezone.now()
+                amount=10 + i,
+                currency=self.currency,
+                account=self.account,
+                description=f'Expense {i}',
+                category=self.expense_category,
+                owner=self.user
+            )
+
+        request = self.factory.get(self.url)
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # По умолчанию размер страницы 10
+        self.assertEqual(len(response.data['results']), 10)
+        self.assertEqual(response.data['count'], 17)
+
+        # Проверяем вторую страницу
+        request = self.factory.get(self.url, {'offset': 10})
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), 7)
+
+    def test_ordering(self):
+        request = self.factory.get(self.url, {'ordering': 'amount'})
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        amounts = [float(result['amount']) for result in response.data['results']]
+        self.assertEqual(amounts, sorted(amounts))
+
+        request = self.factory.get(self.url, {'ordering': '-amount'})
+        force_authenticate(request, user=self.user)
+        response = self.view(request)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        amounts_desc = [float(result['amount']) for result in response.data['results']]
+        self.assertEqual(amounts_desc, sorted(amounts_desc, reverse=True))

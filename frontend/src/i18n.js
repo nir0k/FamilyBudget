@@ -6,6 +6,8 @@ import ru from './locales/ru/translation.json';
 import hu from './locales/hu/translation.json';
 import es from './locales/es/translation.json';
 
+const savedLanguage = localStorage.getItem('language') || 'en';
+
 i18n
     .use(initReactI18next)
     .init({
@@ -15,7 +17,7 @@ i18n
             hu: { translation: hu },
             es: { translation: es },
         },
-        lng: 'en',  // Default language
+        lng: savedLanguage,  // Default language
         fallbackLng: 'en',
         interpolation: {
             escapeValue: false, // react already safes from xss
