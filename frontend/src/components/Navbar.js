@@ -63,6 +63,7 @@ function Navbar({ isDarkTheme, toggleTheme }) {
     const handleLanguageChange = (lang) => {
         i18n.changeLanguage(lang);
         setCurrentLang(lang.toUpperCase().slice(0, 2));
+        localStorage.setItem('language', lang);
     };
 
     return (

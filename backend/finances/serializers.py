@@ -3,7 +3,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import Account, AccountType, Bank, Currency
+from .models import Account, AccountType, Bank, Currency, AccountBalanceHistory
 
 
 class CurrencySerializer(serializers.ModelSerializer):
@@ -75,3 +75,9 @@ class AccountSerializer(serializers.ModelSerializer):
         ).exclude(id=account_id).exists():
             raise ValidationError("You already have an account with this name.")
         return attrs
+
+
+class AccountBalanceHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountBalanceHistory
+        fields = ("id", "date", "balance")

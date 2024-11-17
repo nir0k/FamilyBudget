@@ -53,8 +53,13 @@ def test_currency_viewset_list(client, user):
 
     response = client.get("/api/v1/currencies/")
     assert response.status_code == status.HTTP_200_OK
-    assert len(response.data) == 1
-    assert response.data[0]["name"] == "Dollar"
+
+    # Проверяем, что в "results" есть один объект
+    assert len(response.data["results"]) == 1
+    assert response.data["results"][0]["name"] == "Dollar"
+
+    # Проверяем общее количество записей
+    assert response.data["count"] == 1
 
 
 @pytest.mark.django_db
@@ -196,6 +201,6 @@ def test_account_balance_history_view(client, user, account):
 
     response = client.get(f"/api/v1/accounts/{account.id}/balance-history/")
     assert response.status_code == status.HTTP_200_OK
-    assert len(response.data) == 2
-    assert response.data[0]["balance"] == Decimal("1000.00")
-    assert response.data[1]["balance"] == Decimal("1200.00")
+    assert len(response.data["results"]) == 2
+    assert response.data["results"][0]["balance"] == "1000.00"
+    assert response.data["results"][1]["balance"] == "1200.00"

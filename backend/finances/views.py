@@ -1,10 +1,9 @@
 # finances/views.py
 
 from rest_framework import viewsets
+from rest_framework.generics import ListAPIView
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from .models import Account, AccountBalanceHistory, AccountType, Bank, Currency
 from .serializers import (
@@ -12,6 +11,7 @@ from .serializers import (
     AccountTypeSerializer,
     BankSerializer,
     CurrencySerializer,
+    AccountBalanceHistorySerializer,
 )
 
 
@@ -110,17 +110,26 @@ class AccountViewSet(viewsets.ModelViewSet):
         instance.delete()
 
 
-class AccountBalanceHistoryView(APIView):
+# class AccountBalanceHistoryView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request, account_id):
+#         history = AccountBalanceHistory.objects.filter(
+#             account__id=account_id, account__owner=request.user)
+#         response_data = [
+#             {
+#                 'date': entry.date,
+#                 'balance': entry.balance
+#             }
+#             for entry in history
+#         ]
+#         return Response(response_data)
+class AccountBalanceHistoryView(ListAPIView):
+    serializer_class = AccountBalanceHistorySerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, account_id):
-        history = AccountBalanceHistory.objects.filter(
-            account__id=account_id, account__owner=request.user)
-        response_data = [
-            {
-                'date': entry.date,
-                'balance': entry.balance
-            }
-            for entry in history
-        ]
-        return Response(response_data)
+    def get_queryset(self):
+        account_id = self.kwargs.get("account_id")
+        return AccountBalanceHistory.objects.filter(
+            account__id=account_id, account__owner=self.request.user
+        )

@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 function ConfirmDeleteModal({ show, handleClose, handleConfirm, item, itemType }) {
     const { t } = useTranslation();
 
+    if (!item) return null;
+    
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>

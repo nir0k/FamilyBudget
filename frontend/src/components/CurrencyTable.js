@@ -1,4 +1,5 @@
 // src/components/CurrencyTable.js
+
 import React, { useState, useEffect } from 'react';
 import { Table, Form, Button } from 'react-bootstrap';
 import { fetchCurrencies, addCurrency, updateCurrency, deleteCurrency } from '../api';
@@ -19,6 +20,7 @@ function CurrencyTable() {
     useEffect(() => {
         const loadCurrencies = async () => {
             try {
+                // Use updated fetchCurrencies to handle paginated data
                 const data = await fetchCurrencies(authToken);
                 setCurrencies(data);
             } catch (error) {
@@ -138,7 +140,6 @@ function CurrencyTable() {
                 item={selectedCurrency || {}}
                 itemType="currency"
             />
-
         </div>
     );
 }

@@ -8,6 +8,7 @@ from finances.views import (
 )
 from rest_framework import routers
 from transactions.views import (
+    CombinedTransactionView,
     ExpenseCategoryViewSet,
     ExpenseViewSet,
     IncomeCategoryViewSet,
@@ -30,6 +31,14 @@ urlpatterns = [
     path("v1/", include(router.urls)),
     path("v1/auth/", include("djoser.urls.authtoken")),
     path("v1/users/set_password", change_password, name="change-password"),
-    path("v1/accounts/<int:account_id>/balance-history/",
-         AccountBalanceHistoryView.as_view(), name="account-balance-history"),
+    path(
+        "v1/accounts/<int:account_id>/balance-history/",
+        AccountBalanceHistoryView.as_view(),
+        name="accountbalancehistory-list",
+    ),
+    path(
+        "v1/transactions/transactions/",
+        CombinedTransactionView.as_view(),
+        name="combined-transactions",
+    ),
 ]

@@ -1,191 +1,497 @@
+// TransactionsPage.js
 import React, { useEffect, useState } from 'react';
-import { Table, Form } from 'react-bootstrap';
-import { fetchExpenses, fetchIncomes, fetchCurrencies, fetchExpenseCategories, fetchIncomeCategories, fetchAccounts } from '../api';
+import { Table, Form, Pagination, Dropdown, ButtonGroup, InputGroup, Button } from 'react-bootstrap';
+import Select from 'react-select';
 import { useTranslation } from 'react-i18next';
-import { FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
+import { FaSort, FaSortUp, FaSortDown, FaPlus, FaTrash } from 'react-icons/fa';
+import {
+  fetchTransactions,
+  fetchCurrencies,
+  fetchExpenseCategories,
+  fetchIncomeCategories,
+  fetchAccounts,
+} from '../api';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
-function TransactionsPage() {
-    const { t } = useTranslation();
-    const [transactions, setTransactions] = useState([]);
-    const [filteredTransactions, setFilteredTransactions] = useState([]);
-    const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
-    const [filter, setFilter] = useState('');
-    const authToken = localStorage.getItem('authToken');
+function TransactionsPage({ isDarkTheme }) {
+  const { t } = useTranslation();
+  const [transactions, setTransactions] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
+  const [filters, setFilters] = useState([]);
+  const authToken = localStorage.getItem('authToken');
 
-    const [currencies, setCurrencies] = useState({});
-    const [categories, setCategories] = useState({});
-    const [accounts, setAccounts] = useState({});
+  const availableFields = React.useMemo(
+    () => [
+      { key: 'datetime_from', label: t('dateFrom'), type: 'datetime' },
+      { key: 'datetime_to', label: t('dateTo'), type: 'datetime' },
+      { key: 'transaction_type', label: t('transactionType'), type: 'dropdown' },
+      { key: 'account', label: t('account'), type: 'dropdown' },
+      { key: 'category', label: t('category'), type: 'dropdown' },
+    ],
+    [t]
+  );
+  
 
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const [currencyData, expenseCategoryData, incomeCategoryData, accountData] = await Promise.all([
-                    fetchCurrencies(authToken),
-                    fetchExpenseCategories(authToken),
-                    fetchIncomeCategories(authToken),
-                    fetchAccounts(authToken)
-                ]);
+  const [currencies, setCurrencies] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [accounts, setAccounts] = useState([]);
+  const [transactionTypes] = useState([
+    { value: 'income', label: t('income') },
+    { value: 'expense', label: t('expense') },
+  ]);
 
-                // Create objects for quick access by ID
-                const currencyMap = currencyData.reduce((map, currency) => {
-                    map[currency.id] = currency.code;
-                    return map;
-                }, {});
-                setCurrencies(currencyMap);
+  // Загрузка начальных данных для выпадающих списков
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const [currencyData, expenseCategoryData, incomeCategoryData, accountData] = await Promise.all([
+          fetchCurrencies(authToken),
+          fetchExpenseCategories(authToken),
+          fetchIncomeCategories(authToken),
+          fetchAccounts(authToken),
+        ]);
 
-                const categoryMap = [...expenseCategoryData, ...incomeCategoryData].reduce((map, category) => {
-                    map[category.id] = category.name;
-                    return map;
-                }, {});
-                setCategories(categoryMap);
-
-                const accountMap = accountData.reduce((map, account) => {
-                    map[account.id] = account.name;
-                    return map;
-                }, {});
-                setAccounts(accountMap);
-
-                const [expenses, incomes] = await Promise.all([
-                    fetchExpenses(authToken),
-                    fetchIncomes(authToken)
-                ]);
-
-                const combinedTransactions = [
-                    ...expenses.map(tx => ({ ...tx, type: 'expense' })),
-                    ...incomes.map(tx => ({ ...tx, type: 'income' }))
-                ];
-                combinedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                setTransactions(combinedTransactions);
-                setFilteredTransactions(combinedTransactions);
-            } catch (error) {
-                console.error('Failed to fetch transactions or related data:', error);
-            }
-        };
-        loadData();
-    }, [authToken]);
-
-    const handleSort = (key) => {
-        let direction = 'asc';
-        if (sortConfig.key === key && sortConfig.direction === 'asc') {
-            direction = 'desc';
-        }
-        setSortConfig({ key, direction });
-
-        const sortedTransactions = [...transactions].sort((a, b) => {
-            let aValue = a[key];
-            let bValue = b[key];
-
-            if (key === 'time') {
-                aValue = new Date(a.date).toLocaleTimeString();
-                bValue = new Date(b.date).toLocaleTimeString();
-            } else {
-                aValue = typeof aValue === 'string' ? aValue.toLowerCase() : aValue;
-                bValue = typeof bValue === 'string' ? bValue.toLowerCase() : bValue;
-            }
-
-            if (aValue < bValue) return direction === 'asc' ? -1 : 1;
-            if (aValue > bValue) return direction === 'asc' ? 1 : -1;
-            return 0;
-        });
-
-        setFilteredTransactions(sortedTransactions);
-    };
-
-    const getSortIcon = (key) => {
-        if (sortConfig.key === key) {
-            return sortConfig.direction === 'asc' ? <FaSortUp /> : <FaSortDown />;
-        }
-        return <FaSort />;
-    };
-
-    const handleFilterChange = (event) => {
-        const value = event.target.value.toLowerCase();
-        setFilter(value);
-        setFilteredTransactions(
-            transactions.filter(tx => {
-                const dateStr = new Date(tx.date).toLocaleDateString().toLowerCase();
-                const timeStr = new Date(tx.date).toLocaleTimeString().toLowerCase();
-                const typeStr = tx.type === 'income' ? t('income').toLowerCase() : t('expense').toLowerCase();
-                const currencyName = currencies[tx.currency] ? currencies[tx.currency].toLowerCase() : '';
-                const categoryName = categories[tx.category] ? categories[tx.category].toLowerCase() : '';
-                const accountName = accounts[tx.account] ? accounts[tx.account].toLowerCase() : '';
-
-                return (
-                    tx.description.toLowerCase().includes(value) ||
-                    accountName.includes(value) ||
-                    tx.amount.toString().includes(value) ||
-                    currencyName.includes(value) ||
-                    categoryName.includes(value) ||
-                    dateStr.includes(value) ||
-                    timeStr.includes(value) ||
-                    typeStr.includes(value)
-                );
-            })
+        setCurrencies(
+          currencyData.reduce((map, currency) => ({ ...map, [currency.id]: currency.code }), {})
         );
+        setCategories([...expenseCategoryData, ...incomeCategoryData].map((category) => ({
+          value: category.id,
+          label: category.name,
+        })));
+        setAccounts(
+          accountData.map((account) => ({
+            value: account.id,
+            label: account.name,
+          }))
+        );
+      } catch (error) {
+        console.error('Failed to fetch initial data:', error);
+      }
     };
 
-    return (
-        <div className="container mt-4">
-            <h2>{t('transactions')}</h2>
-            <Form.Control
-                type="text"
-                placeholder={t('filter')}
-                value={filter}
-                onChange={handleFilterChange}
-                className="mb-3"
-            />
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th onClick={() => handleSort('date')}>
-                            {t('date')} {getSortIcon('date')}
-                        </th>
-                        <th onClick={() => handleSort('time')}>
-                            {t('time')} {getSortIcon('time')}
-                        </th>
-                        <th onClick={() => handleSort('amount')}>
-                            {t('amount')} {getSortIcon('amount')}
-                        </th>
-                        <th onClick={() => handleSort('currency')}>
-                            {t('currency')} {getSortIcon('currency')}
-                        </th>
-                        <th onClick={() => handleSort('category')}>
-                            {t('category')} {getSortIcon('category')}
-                        </th>
-                        <th onClick={() => handleSort('account')}>
-                            {t('account')} {getSortIcon('account')}
-                        </th>
-                        <th onClick={() => handleSort('description')}>
-                            {t('description')} {getSortIcon('description')}
-                        </th>
-                        <th onClick={() => handleSort('type')}>
-                            {t('type')} {getSortIcon('type')}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredTransactions.map((transaction) => {
-                        const date = new Date(transaction.date);
-                        const rowClass = transaction.type === 'income' ? 'bg-success-subtle' : 'bg-danger-subtle';
+    loadInitialData();
+  }, [authToken]);
 
-                        return (
-                            <tr key={`${transaction.type}-${transaction.id}`} className={rowClass}>
-                                <td>{date.toLocaleDateString()}</td>
-                                <td>{date.toLocaleTimeString()}</td>
-                                <td>{transaction.amount}</td>
-                                <td>{currencies[transaction.currency] || transaction.currency}</td>
-                                <td>{categories[transaction.category] || transaction.category}</td>
-                                <td>{accounts[transaction.account] || transaction.account}</td>
-                                <td>{transaction.description}</td>
-                                <td>{transaction.type === 'income' ? t('income') : t('expense')}</td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </Table>
-        </div>
-    );
+  // Загрузка транзакций на основе текущего состояния (пагинация, сортировка, фильтрация)
+  useEffect(() => {
+    const loadTransactions = async () => {
+      try {
+        const ordering = `${sortConfig.direction === 'desc' ? '-' : ''}${sortConfig.key}`;
+        const params = {
+          offset: (currentPage - 1) * rowsPerPage,
+          limit: rowsPerPage,
+          ordering,
+          ...filters.reduce((acc, filter) => {
+            acc[filter.field] = filter.value;
+            return acc;
+          }, {}),
+        };
+
+        const data = await fetchTransactions(authToken, params);
+
+        setTransactions(data.results);
+        setTotalCount(data.count);
+      } catch (error) {
+        console.error('Failed to fetch transactions:', error);
+      }
+    };
+
+    loadTransactions();
+  }, [authToken, currentPage, rowsPerPage, sortConfig, filters]);
+
+  // Обработка сортировки
+  const handleSort = (key) => {
+    setSortConfig((prevConfig) => ({
+      key,
+      direction: prevConfig.key === key && prevConfig.direction === 'asc' ? 'desc' : 'asc',
+    }));
+  };
+
+  const getSortIcon = (key) => {
+    if (sortConfig.key === key) {
+      return sortConfig.direction === 'asc' ? <FaSortUp /> : <FaSortDown />;
+    }
+    return <FaSort />;
+  };
+
+  // Добавление нового фильтра
+  const addFilter = () => {
+    setFilters([...filters, { field: 'description', value: '' }]);
+  };
+
+  // Обновление фильтра
+  const updateFilter = (index, field, value) => {
+    const updatedFilters = [...filters];
+    if (field) updatedFilters[index].field = field;
+
+    if (value !== undefined) {
+      if (updatedFilters[index].field.includes('datetime')) {
+        if (value instanceof Date && !isNaN(value.getTime())) {
+          const year = value.getFullYear();
+          const month = String(value.getMonth() + 1).padStart(2, '0');
+          const day = String(value.getDate()).padStart(2, '0');
+          const hours = String(value.getHours()).padStart(2, '0');
+          const minutes = String(value.getMinutes()).padStart(2, '0');
+          const seconds = String(value.getSeconds()).padStart(2, '0');
+
+          const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+          updatedFilters[index].value = formattedDate;
+        } else if (value === '' || value === null) {
+          updatedFilters[index].value = '';
+        } else {
+          console.error('Invalid date selected:', value);
+          return;
+        }
+      } else {
+        updatedFilters[index].value = value;
+      }
+    } else if (field) {
+      // Если только поле изменилось
+      if (updatedFilters[index].field.includes('datetime')) {
+        updatedFilters[index].value = '';
+      } else {
+        updatedFilters[index].value = '';
+      }
+    }
+
+    setFilters(updatedFilters);
+  };
+
+  // Удаление фильтра
+  const removeFilter = (index) => {
+    setFilters(filters.filter((_, i) => i !== index));
+  };
+
+  // Обработка изменения количества строк на странице
+  const handleRowsPerPageChange = (value) => {
+    setRowsPerPage(value);
+    setCurrentPage(1); // Сброс на первую страницу
+  };
+
+  // Отрисовка фильтров
+  const renderFilters = () =>
+    filters.map((filter, index) => {
+      const fieldConfig = availableFields.find((f) => f.key === filter.field) || {};
+      return (
+        <InputGroup className="mb-2" key={index}>
+          <Dropdown as={ButtonGroup}>
+            <Dropdown.Toggle variant="outline-secondary">
+              {fieldConfig.label || t('field')}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {availableFields.map((field) => (
+                <Dropdown.Item key={field.key} onClick={() => updateFilter(index, field.key)}>
+                  {field.label}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
+          {fieldConfig.type === 'datetime' ? (
+            <DatePicker
+              selected={filter.value ? new Date(filter.value) : null}
+              onChange={(date) => updateFilter(index, null, date)}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              timeCaption={t('time')}
+              dateFormat="yyyy-MM-dd HH:mm"
+              placeholderText={t('selectDateAndTime')}
+              isClearable
+            />
+          ) : fieldConfig.type === 'dropdown' ? (
+            <Select
+            options={
+            filter.field === 'transaction_type'
+                ? transactionTypes
+                : filter.field === 'account'
+                ? accounts
+                : categories
+            }
+            value={
+            filter.value
+                ? (
+                    filter.field === 'transaction_type'
+                    ? transactionTypes
+                    : filter.field === 'account'
+                    ? accounts
+                    : categories
+                ).find((option) => option.value === filter.value)
+                : null
+            }
+            onChange={(selected) => updateFilter(index, null, selected ? selected.value : '')}
+            isClearable
+            placeholder={t('selectValue')}
+            styles={{
+            control: (provided) => ({
+                ...provided,
+                backgroundColor: isDarkTheme ? '#343a40' : provided.backgroundColor,
+                borderColor: isDarkTheme ? '#495057' : provided.borderColor,
+                color: isDarkTheme ? '#fff' : provided.color,
+            }),
+            menu: (provided) => ({
+                ...provided,
+                backgroundColor: isDarkTheme ? '#343a40' : provided.backgroundColor,
+            }),
+            option: (provided, state) => ({
+                ...provided,
+                backgroundColor: isDarkTheme
+                ? state.isSelected
+                    ? '#495057'
+                    : state.isFocused
+                    ? '#495057'
+                    : '#343a40'
+                : state.isSelected
+                ? '#007bff'
+                : state.isFocused
+                ? '#e9ecef'
+                : provided.backgroundColor,
+                color: isDarkTheme ? '#fff' : '#212529',
+            }),
+            singleValue: (provided) => ({
+                ...provided,
+                color: isDarkTheme ? '#fff' : provided.color,
+            }),
+            placeholder: (provided) => ({
+                ...provided,
+                color: isDarkTheme ? '#adb5bd' : provided.color,
+            }),
+            input: (provided) => ({
+                ...provided,
+                color: isDarkTheme ? '#fff' : provided.color,
+            }),
+            indicatorSeparator: (provided) => ({
+                ...provided,
+                backgroundColor: isDarkTheme ? '#495057' : provided.backgroundColor,
+            }),
+            dropdownIndicator: (provided) => ({
+                ...provided,
+                color: isDarkTheme ? '#fff' : provided.color,
+            }),
+            }}
+            />
+
+          ) : (
+            <Form.Control
+              type="text"
+              value={filter.value}
+              placeholder={t('enterValue')}
+              onChange={(e) => updateFilter(index, null, e.target.value)}
+            />
+          )}
+          <Button variant="outline-danger" onClick={() => removeFilter(index)}>
+            <FaTrash />
+          </Button>
+        </InputGroup>
+      );
+    });
+
+  // Отрисовка пагинации
+  const renderPagination = () => {
+    const totalPages = Math.ceil(totalCount / rowsPerPage);
+
+    if (totalPages <= 7) {
+      // Если страниц 7 или меньше, отображаем все номера страниц
+      return (
+        <Pagination>
+          <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+            {t('first')}
+          </Pagination.First>
+          <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+            {t('previous')}
+          </Pagination.Prev>
+          {[...Array(totalPages)].map((_, number) => (
+            <Pagination.Item
+              key={number + 1}
+              active={number + 1 === currentPage}
+              onClick={() => setCurrentPage(number + 1)}
+            >
+              {number + 1}
+            </Pagination.Item>
+          ))}
+          <Pagination.Next
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            {t('next')}
+          </Pagination.Next>
+          <Pagination.Last
+            onClick={() => setCurrentPage(totalPages)}
+            disabled={currentPage === totalPages}
+          >
+            {t('last')}
+          </Pagination.Last>
+        </Pagination>
+      );
+    } else {
+      // Если страниц больше 7, используем многоточия
+      let items = [];
+
+      items.push(
+        <Pagination.Item key={1} active={currentPage === 1} onClick={() => setCurrentPage(1)}>
+          1
+        </Pagination.Item>
+      );
+
+      let startPage, endPage;
+
+      if (currentPage <= 4) {
+        // Близко к началу
+        startPage = 2;
+        endPage = 5;
+        for (let number = startPage; number <= endPage; number++) {
+          items.push(
+            <Pagination.Item
+              key={number}
+              active={number === currentPage}
+              onClick={() => setCurrentPage(number)}
+            >
+              {number}
+            </Pagination.Item>
+          );
+        }
+        items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
+      } else if (currentPage >= totalPages - 3) {
+        // Близко к концу
+        items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+        startPage = totalPages - 4;
+        endPage = totalPages - 1;
+        for (let number = startPage; number <= endPage; number++) {
+          items.push(
+            <Pagination.Item
+              key={number}
+              active={number === currentPage}
+              onClick={() => setCurrentPage(number)}
+            >
+              {number}
+            </Pagination.Item>
+          );
+        }
+      } else {
+        // В середине
+        items.push(<Pagination.Ellipsis key="start-ellipsis" disabled />);
+        startPage = currentPage - 1;
+        endPage = currentPage + 1;
+        for (let number = startPage; number <= endPage; number++) {
+          items.push(
+            <Pagination.Item
+              key={number}
+              active={number === currentPage}
+              onClick={() => setCurrentPage(number)}
+            >
+              {number}
+            </Pagination.Item>
+          );
+        }
+        items.push(<Pagination.Ellipsis key="end-ellipsis" disabled />);
+      }
+
+      items.push(
+        <Pagination.Item
+          key={totalPages}
+          active={currentPage === totalPages}
+          onClick={() => setCurrentPage(totalPages)}
+        >
+          {totalPages}
+        </Pagination.Item>
+      );
+
+      return (
+        <Pagination>
+          <Pagination.First onClick={() => setCurrentPage(1)} disabled={currentPage === 1}>
+            {t('first')}
+          </Pagination.First>
+          <Pagination.Prev onClick={() => setCurrentPage(currentPage - 1)} disabled={currentPage === 1}>
+            {t('previous')}
+          </Pagination.Prev>
+          {items}
+          <Pagination.Next
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            {t('next')}
+          </Pagination.Next>
+          <Pagination.Last
+            onClick={() => setCurrentPage(totalPages)}
+            disabled={currentPage === totalPages}
+          >
+            {t('last')}
+          </Pagination.Last>
+        </Pagination>
+      );
+    }
+  };
+
+  return (
+    <div className="container mt-4">
+      <h2>{t('transactions')}</h2>
+      <div className="mb-3">
+        {renderFilters()}
+        <Button variant="outline-primary" onClick={addFilter}>
+          <FaPlus /> {t('addFilter')}
+        </Button>
+      </div>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th onClick={() => handleSort('date')}>
+              {t('date')} {getSortIcon('date')}
+            </th>
+            <th onClick={() => handleSort('time')}>
+              {t('time')} {getSortIcon('time')}
+            </th>
+            <th onClick={() => handleSort('amount')}>
+              {t('amount')} {getSortIcon('amount')}
+            </th>
+            <th onClick={() => handleSort('currency')}>
+              {t('currency')} {getSortIcon('currency')}
+            </th>
+            <th onClick={() => handleSort('category')}>
+              {t('category')} {getSortIcon('category')}
+            </th>
+            <th onClick={() => handleSort('account')}>
+              {t('account')} {getSortIcon('account')}
+            </th>
+            <th>{t('description')}</th>
+            <th>{t('type')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.map((tx) => {
+            const date = new Date(tx.date);
+            return (
+              <tr key={tx.id}>
+                <td>{date.toLocaleDateString()}</td>
+                <td>{date.toLocaleTimeString()}</td>
+                <td>{tx.amount}</td>
+                <td>{currencies[tx.currency]}</td>
+                <td>{categories.find((cat) => cat.value === tx.category)?.label}</td>
+                <td>{accounts.find((acc) => acc.value === tx.account)?.label}</td>
+                <td>{tx.description}</td>
+                <td>{tx.transaction_type === 'income' ? t('income') : t('expense')}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </Table>
+      <div className="d-flex justify-content-between align-items-center mt-3">
+        {renderPagination()}
+        <Dropdown as={ButtonGroup}>
+          <Dropdown.Toggle variant="secondary">{rowsPerPage}</Dropdown.Toggle>
+          <Dropdown.Menu>
+            {[15, 30, 50, 100].map((value) => (
+              <Dropdown.Item key={value} onClick={() => handleRowsPerPageChange(value)}>
+                {value}
+              </Dropdown.Item>
+            ))}
+          </Dropdown.Menu>
+        </Dropdown>
+      </div>
+    </div>
+  );
 }
 
 export default TransactionsPage;

@@ -1,5 +1,4 @@
 // src/components/AccountsTable.js
-
 import React, { useState, useEffect } from 'react';
 import { Table, Form, Button } from 'react-bootstrap';
 import { fetchAccounts, addAccount, updateAccount, deleteAccount, fetchAccountTypes, fetchBanks, fetchCurrencies } from '../api';
@@ -24,16 +23,14 @@ function AccountsTable() {
     useEffect(() => {
         const loadData = async () => {
             try {
-                // Load accounts
-                const accountsData = await fetchAccounts(authToken);
-                setAccounts(accountsData);
-
-                // Load related data
-                const [accountTypesData, banksData, currenciesData] = await Promise.all([
+                // Используем уже изменённые функции из api.js
+                const [accountsData, accountTypesData, banksData, currenciesData] = await Promise.all([
+                    fetchAccounts(authToken),
                     fetchAccountTypes(authToken),
                     fetchBanks(authToken),
                     fetchCurrencies(authToken),
                 ]);
+                setAccounts(accountsData);
                 setAccountTypes(accountTypesData);
                 setBanks(banksData);
                 setCurrencies(currenciesData);

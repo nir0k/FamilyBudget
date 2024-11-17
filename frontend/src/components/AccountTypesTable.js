@@ -20,6 +20,7 @@ function AccountTypesTable() {
     useEffect(() => {
         const loadAccountTypes = async () => {
             try {
+                // Use updated fetchAccountTypes to load all paginated data
                 const data = await fetchAccountTypes(authToken);
                 setAccountTypes(data);
             } catch (error) {
@@ -47,6 +48,7 @@ function AccountTypesTable() {
     const handleSave = async (accountTypeData) => {
         try {
             if (selectedAccountType) {
+                // Update account type
                 const updatedAccountType = await updateAccountType(selectedAccountType.id, accountTypeData, authToken);
                 setAccountTypes((prevAccountTypes) =>
                     prevAccountTypes.map((accountType) =>
@@ -54,6 +56,7 @@ function AccountTypesTable() {
                     )
                 );
             } else {
+                // Add new account type
                 const newAccountType = await addAccountType(accountTypeData, authToken);
                 setAccountTypes([...accountTypes, newAccountType]);
             }

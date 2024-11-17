@@ -66,6 +66,7 @@ class User(AbstractUser):
 
     class Meta:
         verbose_name = "User"
+        ordering = ["username", "email"]
 
     def __str__(self):
         return self.username
