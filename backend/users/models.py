@@ -28,6 +28,22 @@ class MyUserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+    LOCALE_CHOICES = [
+        ('ru_RU', ('Russian')),
+        ('hu_HU', ('Hungarian')),
+        ('es_ES', ('Spanish')),
+        ('en_US', ('English (US)')),
+        ('en_GB', ('English (UK)')),
+    ]
+
+    locale = models.CharField(
+        max_length=10,
+        choices=LOCALE_CHOICES,
+        default='en_US',
+        verbose_name=('Locale'),
+        help_text=('Select your preferred locale.')
+    )
+
     email = models.EmailField(
         unique=True, verbose_name="Email", help_text="Email", null=False, blank=False
     )

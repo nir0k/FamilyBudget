@@ -402,8 +402,6 @@ export async function fetchExpenses(authToken, offset = 0, limit = 15) {
     }
 }
 
-
-
 export async function fetchIncomes(authToken, offset = 0, limit = 15) {
     try {
         console.log(`Fetching incomes with offset=${offset}, limit=${limit}`);
@@ -431,7 +429,6 @@ export async function fetchIncomes(authToken, offset = 0, limit = 15) {
         throw error;
     }
 }
-
 
 /**
  * Fetches the list of income categories from the API.
@@ -537,5 +534,21 @@ export async function fetchTransactions(authToken, params = {}) {
 
     return response.json();
 }
+
+/**
+ * Fetches the list of available locales.
+ *
+ * @returns {Promise<Array>} The list of locales with value and label.
+ */
+export const fetchLocales = async () => {
+    const token = localStorage.getItem('authToken');
+    const response = await api.get('/locale-choices/', {
+        headers: {
+            'Authorization': `Token ${token}`,
+        },
+    });
+
+    return response.data;
+};
 
 export default api;

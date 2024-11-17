@@ -19,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
             "telegram_id",
             "password",
             "accounts",
+            "locale",
         ]
         extra_kwargs = {
             "password": {

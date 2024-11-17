@@ -14,7 +14,7 @@ from transactions.views import (
     IncomeCategoryViewSet,
     IncomeViewSet,
 )
-from users.views import UserViewSet, change_password
+from users.views import LocaleChoicesView, UserViewSet, change_password
 
 router = routers.DefaultRouter()
 router.register(r"users", UserViewSet)
@@ -41,4 +41,5 @@ urlpatterns = [
         CombinedTransactionView.as_view(),
         name="combined-transactions",
     ),
+    path('v1/locale-choices/', LocaleChoicesView.as_view(), name='locale_choices'),
 ]
