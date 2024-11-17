@@ -114,5 +114,7 @@
     "invalidEmail": "Correo electrónico inválido",
     "passwordTooShort": "La contraseña es demasiado corta",
     "passwordsMustMatch": "Las contraseñas deben coincidir",
-    "unknownError": "Error desconocido"
+    "unknownError": "Error desconocido",
+    "locale": "Idioma",
+    "selectLocale": "Seleccione idioma"
   }

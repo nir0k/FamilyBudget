@@ -114,5 +114,7 @@
   "invalidEmail": "Érvénytelen email",
   "passwordTooShort": "A jelszó túl rövid",
   "passwordsMustMatch": "A jelszavaknak egyezniük kell",
-  "unknownError": "Ismeretlen hiba"
+  "unknownError": "Ismeretlen hiba",
+  "locale": "Nyelv",
+  "selectLocale": "Nyelv kiválasztása"
 }

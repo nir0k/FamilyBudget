@@ -114,5 +114,7 @@
   "invalidEmail": "Некорректный email",
   "passwordTooShort": "Пароль слишком короткий",
   "passwordsMustMatch": "Пароли должны совпадать",
-  "unknownError": "Неизвестная ошибка"
+  "unknownError": "Неизвестная ошибка",
+  "locale": "Локаль",
+  "selectLocale": "Выберите локаль"
 }

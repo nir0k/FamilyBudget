@@ -115,5 +115,7 @@
   "invalidEmail": "Invalid Email",
   "passwordTooShort": "Password too short",
   "passwordsMustMatch": "Passwords must match",
-  "unknownError": "Unknown error"
+  "unknownError": "Unknown error",
+  "locale": "Locale",
+  "selectLocale": "Select locale"
 }
