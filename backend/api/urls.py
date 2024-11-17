@@ -1,3 +1,5 @@
+
+from budgets.views import BudgetViewSet
 from django.urls import include, path
 from finances.views import (
     AccountBalanceHistoryView,
@@ -26,6 +28,7 @@ router.register(r'incomeCategories', IncomeCategoryViewSet)
 router.register(r'expenseCategories', ExpenseCategoryViewSet)
 router.register(r'incomes', IncomeViewSet)
 router.register(r'expenses', ExpenseViewSet)
+router.register(r'budgets', BudgetViewSet, basename='budget')
 
 urlpatterns = [
     path("v1/", include(router.urls)),
