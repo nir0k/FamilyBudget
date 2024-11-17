@@ -1,9 +1,8 @@
-// src/components/UserInfoOffcanvas.js
 import React, { useState, useEffect } from 'react';
-import { Offcanvas, Button, Form, Modal } from 'react-bootstrap';
+import { Offcanvas, Button, Form, Modal, Dropdown, DropdownButton } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { FaEdit } from 'react-icons/fa';
-import { changePassword, updateUserData } from '../api';
+import { changePassword, updateUserData, fetchLocales } from '../api';
 import { toast } from 'react-toastify';
 
 function UserInfoOffcanvas({ show, handleClose, userData, isDarkTheme }) {
@@ -14,12 +13,28 @@ function UserInfoOffcanvas({ show, handleClose, userData, isDarkTheme }) {
         username: userData.username,
         email: userData.email,
         telegram_id: userData.telegram_id || '',
+        locale: userData.locale || '',
     });
 
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState(null);
+    const [locales, setLocales] = useState([]);
+
+    // Fetch available locales
+    useEffect(() => {
+        const loadLocales = async () => {
+            try {
+                const localesData = await fetchLocales();
+                setLocales(localesData);
+            } catch (error) {
+                console.error('Failed to fetch locales:', error);
+                toast.error(t('failedToFetchLocales'));
+            }
+        };
+        loadLocales();
+    }, [t]);
 
     // Update editableData when userData changes
     useEffect(() => {
@@ -28,6 +43,7 @@ function UserInfoOffcanvas({ show, handleClose, userData, isDarkTheme }) {
                 username: userData.username || '',
                 email: userData.email || '',
                 telegram_id: userData.telegram_id || '',
+                locale: userData.locale || '',
             });
         }
     }, [userData]);
@@ -39,6 +55,10 @@ function UserInfoOffcanvas({ show, handleClose, userData, isDarkTheme }) {
         setEditableData((prevData) => ({ ...prevData, [name]: value }));
     };
 
+    const handleLocaleChange = (locale) => {
+        setEditableData((prevData) => ({ ...prevData, locale }));
+    };
+
     const handleSaveChanges = async () => {
         try {
             await updateUserData(editableData);
@@ -46,21 +66,16 @@ function UserInfoOffcanvas({ show, handleClose, userData, isDarkTheme }) {
             setIsEditing(false);
         } catch (error) {
             console.error('Update failed:', error);
-            
-            if (error.response && error.response.status === 405) {
-                toast.error(t('methodNotAllowed')); // Localized message for 405 error
-            } else {
-                toast.error(t('updateFailed'));
-            }
+            toast.error(t('updateFailed'));
         }
     };
-    
 
     const handleCancelChanges = () => {
         setEditableData({
             username: userData.username,
             email: userData.email,
             telegram_id: userData.telegram_id || '',
+            locale: userData.locale || '',
         });
         setIsEditing(false);
     };
@@ -141,6 +156,22 @@ function UserInfoOffcanvas({ show, handleClose, userData, isDarkTheme }) {
                                 readOnly={!isEditing}
                                 className={isDarkTheme && isEditing ? 'bg-dark text-light' : ''}
                             />
+                        </Form.Group>
+
+                        <Form.Group controlId="locale" className="mt-3">
+                            <Form.Label>{t('locale')}</Form.Label>
+                            <DropdownButton
+                                title={locales.find((l) => l.value === editableData.locale)?.label || t('selectLocale')}
+                                disabled={!isEditing}
+                                onSelect={handleLocaleChange}
+                                className={isDarkTheme && isEditing ? 'bg-dark text-light' : ''}
+                            >
+                                {locales.map((locale) => (
+                                    <Dropdown.Item key={locale.value} eventKey={locale.value}>
+                                        {locale.label}
+                                    </Dropdown.Item>
+                                ))}
+                            </DropdownButton>
                         </Form.Group>
                     </Form>
 

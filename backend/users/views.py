@@ -3,6 +3,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import User
 from .serializers import ChangePasswordSerializer, UserSerializer
@@ -47,3 +48,15 @@ def change_password(request):
             {"detail": "Password updated successfully"}, status=status.HTTP_200_OK
         )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LocaleChoicesView(APIView):
+    """
+    Эндпоинт для получения списка доступных локалей.
+    """
+    def get(self, request):
+        locale_choices = [
+            {"value": code, "label": label} for code,
+            label in User.LOCALE_CHOICES
+        ]
+        return Response(locale_choices)
