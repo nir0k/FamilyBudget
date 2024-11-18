@@ -93,7 +93,18 @@ function Navbar({ isDarkTheme, toggleTheme }) {
 
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={() => navigate('/transactions')}>{t('transactions')}</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setShowCategoriesOffcanvas(true)}>{t('category')}</Dropdown.Item> {/* Opening Offcanvas for categories */}
+                        <Dropdown.Item onClick={() => setShowCategoriesOffcanvas(true)}>{t('category')}</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+
+                {/* Budgets Dropdown */}
+                <Dropdown align="end" className="ms-2">
+                    <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
+                        {t('budgets')}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => navigate('/budgets')}>{t('manageBudgets')}</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
 

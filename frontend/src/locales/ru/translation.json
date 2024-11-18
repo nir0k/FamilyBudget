@@ -116,5 +116,18 @@
   "passwordsMustMatch": "Пароли должны совпадать",
   "unknownError": "Неизвестная ошибка",
   "locale": "Локаль",
-  "selectLocale": "Выберите локаль"
+  "selectLocale": "Выберите локаль",
+  "budgets": "Бюджеты",
+  "manageBudgets": "Управление бюджетами",
+  "budgetName": "Название бюджета",
+  "budgetAmount": "Сумма бюджета",
+  "budgetStartDate": "Дата начала",
+  "budgetEndDate": "Дата окончания",
+  "totalSpent": "Всего потрачено",
+  "spent": "Потрачено",
+  "remaining": "Остаток",
+  "noBudgetsAvailable": "Нет доступных бюджетов",
+  "failedToFetchBudgets": "Не удалось получить бюджеты",
+  "budgetDates": "{{start}} – {{end}}",
+  "unknownCategory": "Неизвестная категория"
 }

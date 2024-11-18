@@ -117,5 +117,19 @@
   "passwordsMustMatch": "Passwords must match",
   "unknownError": "Unknown error",
   "locale": "Locale",
-  "selectLocale": "Select locale"
+  "selectLocale": "Select locale",
+  "budgets": "Budgets",
+  "manageBudgets": "Manage Budgets",
+  "budgetName": "Budget Name",
+  "budgetAmount": "Budget Amount",
+  "budgetStartDate": "Start Date",
+  "budgetEndDate": "End Date",
+  "totalSpent": "Total Spent",
+  "spent": "Spent",
+  "remaining": "Remaining",
+  "noBudgetsAvailable": "No budgets available",
+  "failedToFetchBudgets": "Failed to fetch budgets",
+  "budgetDates": "{{start}} – {{end}}",
+  "unknownCategory": "Unknown Category"
 }
+

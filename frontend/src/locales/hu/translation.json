@@ -116,5 +116,18 @@
   "passwordsMustMatch": "A jelszavaknak egyezniük kell",
   "unknownError": "Ismeretlen hiba",
   "locale": "Nyelv",
-  "selectLocale": "Nyelv kiválasztása"
+  "selectLocale": "Nyelv kiválasztása",
+  "budgets": "Költségvetések",
+  "manageBudgets": "Költségvetések kezelése",
+  "budgetName": "Költségvetés neve",
+  "budgetAmount": "Költségvetés összege",
+  "budgetStartDate": "Kezdő dátum",
+  "budgetEndDate": "Záró dátum",
+  "totalSpent": "Összes elköltött",
+  "spent": "Elköltött",
+  "remaining": "Hátralévő",
+  "noBudgetsAvailable": "Nincsenek elérhető költségvetések",
+  "failedToFetchBudgets": "A költségvetések lekérése sikertelen",
+  "budgetDates": "{{start}} – {{end}}",
+  "unknownCategory": "Ismeretlen kategória"
 }
