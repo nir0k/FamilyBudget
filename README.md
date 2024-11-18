@@ -3,7 +3,7 @@
 **FamilyBudget** is a personal finance management application specifically designed for families. It allows you to create a family group, invite members, and manage a joint budget. Members can record their expenses both individually and for everyone. The application supports multiple currencies with the ability to convert between them.
 
 ## Features
-
+ 
 ### Current Features
 
 #### Backend
