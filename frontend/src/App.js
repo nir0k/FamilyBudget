@@ -8,6 +8,7 @@ import TransactionsPage from './components/TransactionsPage';
 import AccountsReportPage from './components/AccountsReportPage';
 import TransactionsReportPage from './components/TransactionsReportPage';
 import ExpenseBalanceReportPage from './components/ExpenseBalanceReportPage';
+import BudgetPage from './components/BudgetPage';
 import { ToastContainer } from 'react-toastify';
 import './i18n';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -42,6 +43,7 @@ function App() {
                         <Route path="/reports/accounts" element={<AccountsReportPage />} />
                         <Route path="/reports/transactions" element={<TransactionsReportPage />} />
                         <Route path="/reports/ExpenseBalance" element={<ExpenseBalanceReportPage />} />
+                        <Route path="/budgets" element={<BudgetPage />} />
                     </Routes>
                 </div>
                 

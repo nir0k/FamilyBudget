@@ -55,27 +55,32 @@ function TransactionsReportPage() {
 
     const handleFetchTransactions = useCallback(async () => {
         try {
-            const [expenses, incomes] = await Promise.all([
+            const [expensesResponse, incomesResponse] = await Promise.all([
                 fetchExpenses(authToken),
                 fetchIncomes(authToken)
             ]);
-
+    
+            const expenses = expensesResponse.results || [];
+            const incomes = incomesResponse.results || [];
+    
             const filteredExpenses = expenses.filter(expense => {
-                const expenseDate = new Date(expense.date);
+                const expenseDate = new Date(expense.date.split('T')[0]);
                 return expenseDate >= new Date(startDate) && expenseDate <= new Date(endDate);
             });
-
+    
             const filteredIncomes = incomes.filter(income => {
-                const incomeDate = new Date(income.date);
+                const incomeDate = new Date(income.date.split('T')[0]);
                 return incomeDate >= new Date(startDate) && incomeDate <= new Date(endDate);
             });
-
+    
             setExpenseData(filteredExpenses);
             setIncomeData(filteredIncomes);
+    
         } catch (error) {
             console.error('Failed to fetch transactions:', error);
         }
     }, [startDate, endDate, authToken]);
+    
 
     const uniqueDates = Array.from(new Set([
         ...expenseData.map(entry => entry.date.split('T')[0]),
