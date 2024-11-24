@@ -46,6 +46,7 @@ coverage.xml
 *.cover
 *.py,cover
 .hypothesis/
+.pytest_cache
 .pytest_cache/
 cover/
 
@@ -174,6 +175,7 @@ frontend/.env.test.local
 frontend/.env.production.local
 
 # Editor settings
+.vscode
 .vscode/
 .idea/
 *.swp
