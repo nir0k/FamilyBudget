@@ -57,6 +57,7 @@
   "addAccountType": "Добавить тип счёта",
   "editAccountType": "Редактировать тип счёта",
   "transactions": "Транзакции",
+  "transaction": "Транзакция",
   "category": "Категория",
   "date": "Дата",
   "time": "Время",

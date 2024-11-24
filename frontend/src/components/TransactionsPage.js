@@ -71,7 +71,9 @@ function TransactionsPage({ isDarkTheme }) {
   ]);
 
   const [showModal, setShowModal] = useState(false);
-  const [newTransaction, setNewTransaction] = useState({
+  const [editTransaction, setEditTransaction] = useState(null);
+
+  const initialTransactionState = {
     date: new Date(),
     amount: '',
     currency: '',
@@ -79,14 +81,19 @@ function TransactionsPage({ isDarkTheme }) {
     account: '',
     description: '',
     transaction_type: 'expense', // Default to 'expense'
-  });
-  const [editTransaction, setEditTransaction] = useState(null);
+  };
+
+  const [newTransaction, setNewTransaction] = useState(initialTransactionState);
 
   const [expenseCategories, setExpenseCategories] = useState([]);
   const [incomeCategories, setIncomeCategories] = useState([]);
 
   const handleModalClose = () => setShowModal(false);
-  const handleModalShow = () => setShowModal(true);
+  const handleModalShow = () => {
+    setNewTransaction(initialTransactionState); // Reset the form
+    setEditTransaction(null); // Ensure we're not in edit mode
+    setShowModal(true);
+  };
 
   const handleEditModalShow = (transaction) => {
     setNewTransaction(transaction);
@@ -579,17 +586,32 @@ function TransactionsPage({ isDarkTheme }) {
                     key={col}
                     onMouseEnter={() => setHoveredCell({ row: rowIndex, col: colIndex })}
                     onMouseLeave={() => setHoveredCell({ row: null, col: null })}
+                    style={{ position: 'relative', overflow: 'hidden' }} // Add relative positioning and hide overflow
                   >
-                    {col === 'date' && date.toLocaleDateString()}
-                    {col === 'time' && date.toLocaleTimeString()}
-                    {col === 'amount' && tx.amount}
-                    {col === 'currency' && currencies[tx.currency]}
-                    {col === 'category' && getFilteredCategories().find((cat) => cat.value === tx.category)?.label}
-                    {col === 'account' && accounts.find((acc) => acc.value === tx.account)?.label}
-                    {col === 'description' && tx.description}
-                    {col === 'type' && (tx.transaction_type === 'income' ? t('income') : t('expense'))}
+                    <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {/* Render the cell content */}
+                      {col === 'date' && date.toLocaleDateString()}
+                      {col === 'time' && date.toLocaleTimeString()}
+                      {col === 'amount' && tx.amount}
+                      {col === 'currency' && currencies[tx.currency]}
+                      {col === 'category' && getFilteredCategories().find((cat) => cat.value === tx.category)?.label}
+                      {col === 'account' && accounts.find((acc) => acc.value === tx.account)?.label}
+                      {col === 'description' && tx.description}
+                      {col === 'type' && (tx.transaction_type === 'income' ? t('income') : t('expense'))}
+                    </div>
                     {hoveredCell.row === rowIndex && hoveredCell.col === colIndex && (
-                      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          height: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          padding: '0 5px',
+                          backgroundColor: 'rgba(255, 255, 255, 0.8)', // Optional background
+                        }}
+                      >
                         <FaEdit
                           style={{ cursor: 'pointer', marginRight: '10px' }}
                           onClick={() => handleEditModalShow(tx)}
