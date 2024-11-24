@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "users.apps.UsersConfig",
     "finances.apps.FinancesConfig",
     "transactions.apps.TransactionsConfig",
+    "budgets.apps.BudgetsConfig",
     "api.apps.ApiConfig",
 ]
 

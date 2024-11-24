@@ -54,10 +54,15 @@ function ExpenseBalanceReportPage() {
 
     const handleFetchData = useCallback(async () => {
         try {
-            const [expenses, accountBalances] = await Promise.all([
+            const [expensesResponse, accountBalances] = await Promise.all([
                 fetchExpenses(authToken),
-                Promise.all(selectedAccounts.map(accountId => fetchAccountBalanceHistory(accountId, authToken, startDate, endDate)))
+                Promise.all(selectedAccounts.map(accountId =>
+                    fetchAccountBalanceHistory(accountId, authToken, startDate, endDate)
+                )),
             ]);
+    
+            // Извлекаем массив расходов из ответа
+            const expenses = expensesResponse.results || [];
     
             // Преобразуем `endDate` к концу дня для корректной фильтрации
             const endDateTime = new Date(new Date(endDate).setHours(23, 59, 59, 999));
@@ -80,6 +85,7 @@ function ExpenseBalanceReportPage() {
             console.error('Failed to fetch transactions or balances:', error);
         }
     }, [selectedExpenseCategories, selectedAccounts, startDate, endDate, authToken]);
+    
     
 
     const uniqueDates = Array.from(new Set([...expenseData, ...balanceData].map(entry => entry.date.split('T')[0]))).sort();

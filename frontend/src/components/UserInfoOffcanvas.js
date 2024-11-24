@@ -161,12 +161,14 @@ function UserInfoOffcanvas({ show, handleClose, userData, isDarkTheme }) {
                         <Form.Group controlId="locale" className="mt-3">
                             <Form.Label>{t('locale')}</Form.Label>
                             <DropdownButton
-                                title={locales.find((l) => l.value === editableData.locale)?.label || t('selectLocale')}
+                                title={
+                                    locales?.find((l) => l.value === editableData.locale)?.label || t('selectLocale')
+                                }
                                 disabled={!isEditing}
                                 onSelect={handleLocaleChange}
                                 className={isDarkTheme && isEditing ? 'bg-dark text-light' : ''}
                             >
-                                {locales.map((locale) => (
+                                {locales?.map((locale) => (
                                     <Dropdown.Item key={locale.value} eventKey={locale.value}>
                                         {locale.label}
                                     </Dropdown.Item>
