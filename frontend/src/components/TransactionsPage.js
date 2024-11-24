@@ -1,9 +1,10 @@
 // TransactionsPage.js
 import React, { useEffect, useState } from 'react';
-import { Table, Form, Pagination, Dropdown, ButtonGroup, InputGroup, Button } from 'react-bootstrap';
+import { Table, Form, Pagination, Dropdown, ButtonGroup, InputGroup, Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import { useTranslation } from 'react-i18next';
-import { FaSort, FaSortUp, FaSortDown, FaPlus, FaTrash } from 'react-icons/fa';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
+import { FaSort, FaSortUp, FaSortDown, FaPlus, FaTrash, FaEdit, FaTrashAlt } from 'react-icons/fa';
 import {
   fetchTransactions,
   fetchCurrencies,
@@ -11,8 +12,10 @@ import {
   fetchIncomeCategories,
   fetchAccounts,
 } from '../api';
+import { addExpense, addIncome, deleteTransaction, updateTransaction } from '../api/transaction';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+
 
 function TransactionsPage({ isDarkTheme }) {
   const { t } = useTranslation();
@@ -23,6 +26,9 @@ function TransactionsPage({ isDarkTheme }) {
   const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
   const [filters, setFilters] = useState([]);
   const authToken = localStorage.getItem('authToken');
+  const [hoveredCell, setHoveredCell] = useState({ row: null, col: null });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [transactionToDelete, setTransactionToDelete] = useState(null);
 
   const availableFields = React.useMemo(
     () => [
@@ -34,15 +40,108 @@ function TransactionsPage({ isDarkTheme }) {
     ],
     [t]
   );
+
+  const handleDeleteModalShow = (transaction) => {
+    setTransactionToDelete(transaction);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteModalClose = () => {
+      setTransactionToDelete(null);
+      setShowDeleteModal(false);
+  };
+
+  const handleDeleteConfirm = async (transactionId) => {
+      try {
+          await deleteTransaction(authToken, transactionId, transactionToDelete.transaction_type);
+          setTransactions(transactions.filter((tx) => tx.id !== transactionId));
+          setShowDeleteModal(false);
+      } catch (error) {
+          console.error('Failed to delete transaction:', error);
+          setShowDeleteModal(false);
+      }
+  };
   
 
   const [currencies, setCurrencies] = useState({});
-  const [categories, setCategories] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [transactionTypes] = useState([
     { value: 'income', label: t('income') },
     { value: 'expense', label: t('expense') },
   ]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [newTransaction, setNewTransaction] = useState({
+    date: new Date(),
+    amount: '',
+    currency: '',
+    category: '',
+    account: '',
+    description: '',
+    transaction_type: 'expense', // Default to 'expense'
+  });
+  const [editTransaction, setEditTransaction] = useState(null);
+
+  const [expenseCategories, setExpenseCategories] = useState([]);
+  const [incomeCategories, setIncomeCategories] = useState([]);
+
+  const handleModalClose = () => setShowModal(false);
+  const handleModalShow = () => setShowModal(true);
+
+  const handleEditModalShow = (transaction) => {
+    setNewTransaction(transaction);
+    setEditTransaction(transaction);
+    setShowModal(true);
+  };
+
+  // const handleDeleteTransaction = async (transactionId, transactionType) => {
+  //   if (window.confirm(t('confirmDeleteTransaction'))) {
+  //     try {
+  //       await deleteTransaction(authToken, transactionId, transactionType);
+  //       setTransactions(transactions.filter(tx => tx.id !== transactionId));
+  //       setCurrentPage(1); // Reset to first page after deleting
+  //     } catch (error) {
+  //       console.error('Failed to delete transaction:', error);
+  //       if (error.response && error.response.status === 403) {
+  //         alert(t('deleteFailedPermission'));
+  //       } else {
+  //         alert(t('deleteFailed'));
+  //       }
+  //     }
+  //   }
+  // };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewTransaction((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDateChange = (date) => {
+    setNewTransaction((prev) => ({ ...prev, date }));
+  };
+
+  const handleSelectChange = (name, selectedOption) => {
+    setNewTransaction((prev) => ({ ...prev, [name]: selectedOption.value }));
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editTransaction) {
+        await updateTransaction(authToken, newTransaction);
+      } else {
+        if (newTransaction.transaction_type === 'expense') {
+          await addExpense(authToken, newTransaction);
+        } else {
+          await addIncome(authToken, newTransaction);
+        }
+      }
+      setShowModal(false);
+      setCurrentPage(1); // Reset to first page after adding or editing
+    } catch (error) {
+      console.error('Failed to save transaction:', error);
+    }
+  };
 
   // Загрузка начальных данных для выпадающих списков
   useEffect(() => {
@@ -58,7 +157,11 @@ function TransactionsPage({ isDarkTheme }) {
         setCurrencies(
           currencyData.reduce((map, currency) => ({ ...map, [currency.id]: currency.code }), {})
         );
-        setCategories([...expenseCategoryData, ...incomeCategoryData].map((category) => ({
+        setExpenseCategories(expenseCategoryData.map((category) => ({
+          value: category.id,
+          label: category.name,
+        })));
+        setIncomeCategories(incomeCategoryData.map((category) => ({
           value: category.id,
           label: category.name,
         })));
@@ -75,6 +178,10 @@ function TransactionsPage({ isDarkTheme }) {
 
     loadInitialData();
   }, [authToken]);
+
+  const getFilteredCategories = () => {
+    return newTransaction.transaction_type === 'expense' ? expenseCategories : incomeCategories;
+  };
 
   // Загрузка транзакций на основе текущего состояния (пагинация, сортировка, фильтрация)
   useEffect(() => {
@@ -209,7 +316,7 @@ function TransactionsPage({ isDarkTheme }) {
                 ? transactionTypes
                 : filter.field === 'account'
                 ? accounts
-                : categories
+                : getFilteredCategories()
             }
             value={
             filter.value
@@ -218,7 +325,7 @@ function TransactionsPage({ isDarkTheme }) {
                     ? transactionTypes
                     : filter.field === 'account'
                     ? accounts
-                    : categories
+                    : getFilteredCategories()
                 ).find((option) => option.value === filter.value)
                 : null
             }
@@ -433,6 +540,9 @@ function TransactionsPage({ isDarkTheme }) {
         <Button variant="outline-primary" onClick={addFilter}>
           <FaPlus /> {t('addFilter')}
         </Button>
+        <Button variant="outline-primary" onClick={handleModalShow}>
+          <FaPlus /> {t('addTransaction')}
+        </Button>
       </div>
       <Table striped bordered hover>
         <thead>
@@ -460,18 +570,38 @@ function TransactionsPage({ isDarkTheme }) {
           </tr>
         </thead>
         <tbody>
-          {transactions.map((tx) => {
+          {transactions.map((tx, rowIndex) => {
             const date = new Date(tx.date);
             return (
               <tr key={tx.id}>
-                <td>{date.toLocaleDateString()}</td>
-                <td>{date.toLocaleTimeString()}</td>
-                <td>{tx.amount}</td>
-                <td>{currencies[tx.currency]}</td>
-                <td>{categories.find((cat) => cat.value === tx.category)?.label}</td>
-                <td>{accounts.find((acc) => acc.value === tx.account)?.label}</td>
-                <td>{tx.description}</td>
-                <td>{tx.transaction_type === 'income' ? t('income') : t('expense')}</td>
+                {['date', 'time', 'amount', 'currency', 'category', 'account', 'description', 'type'].map((col, colIndex) => (
+                  <td
+                    key={col}
+                    onMouseEnter={() => setHoveredCell({ row: rowIndex, col: colIndex })}
+                    onMouseLeave={() => setHoveredCell({ row: null, col: null })}
+                  >
+                    {col === 'date' && date.toLocaleDateString()}
+                    {col === 'time' && date.toLocaleTimeString()}
+                    {col === 'amount' && tx.amount}
+                    {col === 'currency' && currencies[tx.currency]}
+                    {col === 'category' && getFilteredCategories().find((cat) => cat.value === tx.category)?.label}
+                    {col === 'account' && accounts.find((acc) => acc.value === tx.account)?.label}
+                    {col === 'description' && tx.description}
+                    {col === 'type' && (tx.transaction_type === 'income' ? t('income') : t('expense'))}
+                    {hoveredCell.row === rowIndex && hoveredCell.col === colIndex && (
+                      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <FaEdit
+                          style={{ cursor: 'pointer', marginRight: '10px' }}
+                          onClick={() => handleEditModalShow(tx)}
+                        />
+                        <FaTrashAlt
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleDeleteModalShow(tx)}
+                        />
+                      </div>
+                    )}
+                  </td>
+                ))}
               </tr>
             );
           })}
@@ -490,8 +620,102 @@ function TransactionsPage({ isDarkTheme }) {
           </Dropdown.Menu>
         </Dropdown>
       </div>
+      <Modal show={showModal} onHide={handleModalClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>{editTransaction ? t('editTransaction') : t('addTransaction')}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleFormSubmit}>
+            <Form.Group controlId="formTransactionType">
+              <Form.Label>{t('transactionType')}</Form.Label>
+              <Select
+                options={transactionTypes}
+                value={transactionTypes.find(
+                  (type) => type.value === newTransaction.transaction_type
+                )}
+                onChange={(selected) => handleSelectChange('transaction_type', selected)}
+                defaultValue={transactionTypes.find((type) => type.value === 'expense')}
+              />
+            </Form.Group>
+            <Form.Group controlId="formDate">
+              <Form.Label>{t('date')}</Form.Label>
+              <DatePicker
+                selected={newTransaction.date}
+                onChange={handleDateChange}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                timeCaption={t('time')}
+                dateFormat="yyyy-MM-dd HH:mm"
+                className="form-control"
+              />
+            </Form.Group>
+            <Form.Group controlId="formAmount">
+              <Form.Label>{t('amount')}</Form.Label>
+              <Form.Control
+                type="number"
+                name="amount"
+                value={newTransaction.amount}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Form.Group controlId="formCurrency">
+              <Form.Label>{t('currency')}</Form.Label>
+              <Select
+                options={Object.keys(currencies).map((key) => ({
+                  value: key,
+                  label: currencies[key],
+                }))}
+                value={{
+                  value: newTransaction.currency,
+                  label: currencies[newTransaction.currency],
+                }}
+                onChange={(selected) => handleSelectChange('currency', selected)}
+              />
+            </Form.Group>
+            <Form.Group controlId="formCategory">
+              <Form.Label>{t('category')}</Form.Label>
+              <Select
+                options={getFilteredCategories()}
+                value={getFilteredCategories().find((cat) => cat.value === newTransaction.category)}
+                onChange={(selected) => handleSelectChange('category', selected)}
+              />
+            </Form.Group>
+            <Form.Group controlId="formAccount">
+              <Form.Label>{t('account')}</Form.Label>
+              <Select
+                options={accounts}
+                value={accounts.find((acc) => acc.value === newTransaction.account)}
+                onChange={(selected) => handleSelectChange('account', selected)}
+              />
+            </Form.Group>
+            <Form.Group controlId="formDescription">
+              <Form.Label>{t('description')}</Form.Label>
+              <Form.Control
+                type="text"
+                name="description"
+                value={newTransaction.description}
+                onChange={handleInputChange}
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit">
+              {t('save')}
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
+      <ConfirmDeleteModal
+        show={showDeleteModal}
+        handleClose={handleDeleteModalClose}
+        handleConfirm={handleDeleteConfirm}
+        item={transactionToDelete}
+        itemType="transaction"
+        itemName={transactionToDelete ? transactionToDelete.description : ''} // передаем описание транзакции
+      />
+
     </div>
   );
 }
 
 export default TransactionsPage;
+

@@ -4,7 +4,7 @@ import React from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 
-function ConfirmDeleteModal({ show, handleClose, handleConfirm, item, itemType }) {
+function ConfirmDeleteModal({ show, handleClose, handleConfirm, item, itemType, itemName }) {
     const { t } = useTranslation();
 
     if (!item) return null;
@@ -15,7 +15,7 @@ function ConfirmDeleteModal({ show, handleClose, handleConfirm, item, itemType }
                 <Modal.Title>{t('confirmDelete')}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                {t('confirmDeleteMessage', { itemType: t(itemType), name: item.name })}
+                {t('confirmDeleteMessage', { itemType: t(itemType), name: itemName })}
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={handleClose}>

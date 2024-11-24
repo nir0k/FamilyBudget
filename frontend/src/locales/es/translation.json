@@ -132,5 +132,8 @@
   "budgetDates": "{{start}} – {{end}}",
   "unknownCategory": "Categoría desconocida",
   "confirmDeleteBudget": "¿Está seguro de que desea eliminar este presupuesto?",
-  "budget": "Presupuesto"
+  "budget": "Presupuesto",
+  "save": "Guardar",
+  "deleteFailed": "No se pudo eliminar la transacción.",
+  "deleteFailedPermission": "No tienes permiso para eliminar esta transacción."
 }

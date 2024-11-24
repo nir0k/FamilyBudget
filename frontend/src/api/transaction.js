@@ -60,3 +60,39 @@ export async function fetchIncomes(authToken, offset = 0, limit = 15) {
         throw error;
     }
 }
+
+export async function addExpense(authToken, expenseData) {
+    const response = await api.post('/expenses/', expenseData, {
+        headers: {
+            Authorization: `Token ${authToken}`,
+        },
+    });
+    return response.data;
+}
+
+export async function addIncome(authToken, incomeData) {
+    const response = await api.post('/incomes/', incomeData, {
+        headers: {
+            Authorization: `Token ${authToken}`,
+        },
+    });
+    return response.data;
+}
+
+export async function deleteTransaction(authToken, transactionId, transactionType) {
+  const endpoint = transactionType === 'income' ? '/incomes/' : '/expenses/';
+  await api.delete(`${endpoint}${transactionId}/`, {
+    headers: {
+      Authorization: `Token ${authToken}`,
+    },
+  });
+}
+
+export async function updateTransaction(authToken, transactionData) {
+  const response = await api.put(`/transactions/transactions/${transactionData.id}/`, transactionData, {
+    headers: {
+      Authorization: `Token ${authToken}`,
+    },
+  });
+  return response.data;
+}

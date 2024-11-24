@@ -132,5 +132,8 @@
   "budgetDates": "{{start}} – {{end}}",
   "unknownCategory": "Ismeretlen kategória",
   "confirmDeleteBudget": "Biztosan törli ezt a költségvetést?",
-  "budget": "Költségvetés"
+  "budget": "Költségvetés",
+  "save": "Mentés",
+  "deleteFailed": "A tranzakció törlése nem sikerült.",
+  "deleteFailedPermission": "Nincs engedélye a tranzakció törlésére."
 }

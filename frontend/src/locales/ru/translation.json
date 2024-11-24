@@ -132,5 +132,8 @@
   "budgetDates": "{{start}} – {{end}}",
   "unknownCategory": "Неизвестная категория",
   "confirmDeleteBudget": "Вы уверены, что хотите удалить этот бюджет?",
-  "budget": "бюджет"
+  "budget": "бюджет",
+  "save": "Сохранить",
+  "deleteFailed": "Не удалось удалить транзакцию.",
+  "deleteFailedPermission": "У вас нет разрешения на удаление этой транзакции."
 }
