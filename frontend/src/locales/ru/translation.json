@@ -129,5 +129,7 @@
   "noBudgetsAvailable": "Нет доступных бюджетов",
   "failedToFetchBudgets": "Не удалось получить бюджеты",
   "budgetDates": "{{start}} – {{end}}",
-  "unknownCategory": "Неизвестная категория"
+  "unknownCategory": "Неизвестная категория",
+  "confirmDeleteBudget": "Вы уверены, что хотите удалить этот бюджет?",
+  "budget": "бюджет"
 }

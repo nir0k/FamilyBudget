@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Alert, Spinner, Accordion, Form, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { fetchBudgets, fetchExpenseCategories, fetchIncomeCategories, updateBudget } from '../api';
+import { fetchBudgets, fetchExpenseCategories, fetchIncomeCategories, updateBudget, deleteBudget } from '../api';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 
 const BudgetPage = () => {
     const { t } = useTranslation();
@@ -12,6 +13,8 @@ const BudgetPage = () => {
     const [editBudget, setEditBudget] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
     const authToken = localStorage.getItem('authToken');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [budgetToDelete, setBudgetToDelete] = useState(null);
 
     useEffect(() => {
         const loadBudgetsAndCategories = async () => {
@@ -72,6 +75,11 @@ const BudgetPage = () => {
         });
     };
 
+    const handleDeleteClick = (budget) => {
+        setBudgetToDelete(budget);
+        setShowDeleteModal(true);
+    };
+
     const startEditing = (budget) => {
         setEditBudget({
             ...budget,
@@ -104,6 +112,20 @@ const BudgetPage = () => {
         const updatedCategories = [...editBudget.budget_categories];
         updatedCategories.splice(index, 1);
         setEditBudget((prev) => ({ ...prev, budget_categories: updatedCategories }));
+    };
+
+    const deleteBudgetById = async (budgetId) => {
+        try {
+            await deleteBudget(authToken, budgetId);
+            setBudgets((prevBudgets) =>
+                prevBudgets.filter((budget) => budget.id !== budgetId)
+            );
+            setShowDeleteModal(false);
+            setBudgetToDelete(null);
+        } catch (err) {
+            console.error('Failed to delete budget:', err);
+            setError(t('failedToDeleteBudget'));
+        }
     };
 
     const saveChanges = async () => {
@@ -315,6 +337,9 @@ const BudgetPage = () => {
                                             <Button variant="warning" onClick={() => startEditing(budget)}>
                                                 {t('edit')}
                                             </Button>
+                                            <Button variant="danger" onClick={() => handleDeleteClick(budget)} className="ms-2">
+                                                {t('delete')}
+                                            </Button>
                                         </>
                                     )}
                                 </Accordion.Body>
@@ -323,6 +348,16 @@ const BudgetPage = () => {
                     })}
                 </Accordion>
             )}
+            <ConfirmDeleteModal
+                show={showDeleteModal}
+                handleClose={() => { 
+                    setShowDeleteModal(false); 
+                    setBudgetToDelete(null); 
+                }}
+                handleConfirm={deleteBudgetById}
+                item={budgetToDelete}
+                itemType="budget"
+            />
         </div>
     );
 };

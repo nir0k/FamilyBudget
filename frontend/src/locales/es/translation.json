@@ -129,5 +129,7 @@
   "noBudgetsAvailable": "No hay presupuestos disponibles",
   "failedToFetchBudgets": "Error al obtener presupuestos",
   "budgetDates": "{{start}} – {{end}}",
-  "unknownCategory": "Categoría desconocida"
+  "unknownCategory": "Categoría desconocida",
+  "confirmDeleteBudget": "¿Está seguro de que desea eliminar este presupuesto?",
+  "budget": "Presupuesto"
 }

@@ -596,5 +596,25 @@ export const updateBudget = async (authToken, budgetId, budgetData) => {
 };
 
 
+/**
+ * Deletes a budget from the API.
+ *
+ * @param {string} authToken - The authentication token.
+ * @param {number} budgetId - The ID of the budget to delete.
+ * @returns {Promise<void>}
+ * @throws {Error} If the request fails.
+ */
+export const deleteBudget = async (authToken, budgetId) => {
+    try {
+        await api.delete(`/budgets/${budgetId}/`, {
+            headers: {
+                Authorization: `Token ${authToken}`,
+            },
+        });
+    } catch (error) {
+        console.error('Error deleting budget:', error.response || error.message);
+        throw new Error('Failed to delete budget');
+    }
+};
 
 export default api;

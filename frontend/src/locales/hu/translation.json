@@ -129,5 +129,7 @@
   "noBudgetsAvailable": "Nincsenek elérhető költségvetések",
   "failedToFetchBudgets": "A költségvetések lekérése sikertelen",
   "budgetDates": "{{start}} – {{end}}",
-  "unknownCategory": "Ismeretlen kategória"
+  "unknownCategory": "Ismeretlen kategória",
+  "confirmDeleteBudget": "Biztosan törli ezt a költségvetést?",
+  "budget": "Költségvetés"
 }
