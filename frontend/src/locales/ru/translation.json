@@ -85,6 +85,7 @@
   "showCombinedChart": "Показать общий график",
   "noDataAvailable": "Нет данных за выбранный период.",
   "noDataForAccounts": "Нет данных для следующих счетов",
+  "transactionsReport": "Отчёт по транзакциям",
   "expenseBalanceReport": "Отчет по расходам и балансу",
   "selectExpenseCategories": "Выберите категории расходов",
   "selectIncomeCategories": "Выберите категории доходов",

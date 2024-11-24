@@ -85,6 +85,7 @@
   "showCombinedChart": "Összesített diagram megjelenítése",
   "noDataAvailable": "Nincsenek adatok a kiválasztott időszakra.",
   "noDataForAccounts": "Nincsenek adatok a következő számlákhoz",
+  "transactionsReport": "Tranzakciók jelentése",
   "expenseBalanceReport": "Kiadások és egyenleg jelentés",
   "selectExpenseCategories": "Válassza ki a kiadási kategóriákat",
   "selectIncomeCategories": "Válassza ki a jövedelmi kategóriákat",

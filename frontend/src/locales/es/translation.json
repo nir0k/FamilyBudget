@@ -85,6 +85,7 @@
   "showCombinedChart": "Mostrar gráfico combinado",
   "noDataAvailable": "No hay datos disponibles para el período seleccionado.",
   "noDataForAccounts": "No hay datos disponibles para las siguientes cuentas",
+  "transactionsReport": "Informe de transacciones",
   "expenseBalanceReport": "Informe de Gastos y Saldo",
   "selectExpenseCategories": "Seleccione Categorías de Gastos",
   "selectIncomeCategories": "Seleccione Categorías de Ingresos",
