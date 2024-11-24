@@ -7,10 +7,14 @@ class BudgetCategorySerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(
         queryset=ExpenseCategory.objects.all()
     )
+    spent = serializers.SerializerMethodField()
 
     class Meta:
         model = BudgetCategory
-        fields = ['id', 'category', 'amount']
+        fields = ['id', 'category', 'amount', 'spent']
+
+    def get_spent(self, obj):
+        return obj.budget.category_spent(obj.category)
 
     def validate_category(self, value):
         user = self.context['request'].user

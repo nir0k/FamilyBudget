@@ -289,7 +289,7 @@ const BudgetPage = () => {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {sortedCategories(budget.budget_categories).map((category) => {
+                                                {categoriesToSort.map((category) => {
                                                         const categoryName = categories[category.category] || t('unknownCategory');
                                                         const categoryRemaining = parseFloat(category.amount);
 
@@ -297,7 +297,7 @@ const BudgetPage = () => {
                                                             <tr key={category.id}>
                                                                 <td>{categoryName}</td>
                                                                 <td>{category.amount}</td>
-                                                                <td>0.00</td> {/* Spent пока всегда 0 */}
+                                                                <td>{category.spent}</td>
                                                                 <td
                                                                     className={
                                                                         categoryRemaining >= 0
