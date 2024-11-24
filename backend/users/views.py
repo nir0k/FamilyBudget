@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -54,6 +54,8 @@ class LocaleChoicesView(APIView):
     """
     Эндпоинт для получения списка доступных локалей.
     """
+    permission_classes = [AllowAny]
+
     def get(self, request):
         locale_choices = [
             {"value": code, "label": label} for code,
