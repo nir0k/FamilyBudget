@@ -291,7 +291,7 @@ const BudgetPage = () => {
                                                 <tbody>
                                                 {categoriesToSort.map((category) => {
                                                         const categoryName = categories[category.category] || t('unknownCategory');
-                                                        const categoryRemaining = parseFloat(category.amount);
+                                                        const categoryRemaining = parseFloat(category.amount) - parseFloat(category.spent);
 
                                                         return (
                                                             <tr key={category.id}>
