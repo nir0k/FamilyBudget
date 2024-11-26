@@ -71,56 +71,59 @@ function Navbar({ isDarkTheme, toggleTheme }) {
             <div className="container">
                 <Link to="/" className="navbar-brand">Family Budget</Link>
 
-                {/* Finances Dropdown */}
-                <Dropdown align="end" className="ms-2">
-                    <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
-                        {t('finances')}
-                    </Dropdown.Toggle>
+                {authToken && (
+                    <>
+                        {/* Finances Dropdown */}
+                        <Dropdown align="end" className="ms-2">
+                            <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
+                                {t('finances')}
+                            </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => setShowAccountsOffcanvas(true)}>{t('accounts')}</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setShowAccountTypesOffcanvas(true)}>{t('accountTypes')}</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setShowBanksOffcanvas(true)}>{t('banks')}</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setShowCurrencyOffcanvas(true)}>{t('currency')}</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => setShowAccountsOffcanvas(true)}>{t('accounts')}</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setShowAccountTypesOffcanvas(true)}>{t('accountTypes')}</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setShowBanksOffcanvas(true)}>{t('banks')}</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setShowCurrencyOffcanvas(true)}>{t('currency')}</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
 
-                {/* Transactions Dropdown */}
-                <Dropdown align="end" className="ms-2">
-                    <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
-                        {t('transactions')}
-                    </Dropdown.Toggle>
+                        {/* Transactions Dropdown */}
+                        <Dropdown align="end" className="ms-2">
+                            <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
+                                {t('transactions')}
+                            </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => navigate('/transactions')}>{t('transactions')}</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setShowCategoriesOffcanvas(true)}>{t('category')}</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => navigate('/transactions')}>{t('transactions')}</Dropdown.Item>
+                                <Dropdown.Item onClick={() => setShowCategoriesOffcanvas(true)}>{t('category')}</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
 
-                {/* Budgets Dropdown */}
-                <Dropdown align="end" className="ms-2">
-                    <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
-                        {t('budgets')}
-                    </Dropdown.Toggle>
+                        {/* Budgets Dropdown */}
+                        <Dropdown align="end" className="ms-2">
+                            <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
+                                {t('budgets')}
+                            </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => navigate('/budgets')}>{t('manageBudgets')}</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => navigate('/budgets')}>{t('manageBudgets')}</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
 
-                {/* Reports Dropdown */}
-                <Dropdown align="end" className="ms-2">
-                    <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
-                        {t('reports')}
-                    </Dropdown.Toggle>
+                        {/* Reports Dropdown */}
+                        <Dropdown align="end" className="ms-2">
+                            <Dropdown.Toggle variant="link" className="text-decoration-none" style={{ color: isDarkTheme ? '#fff' : '#333' }}>
+                                {t('reports')}
+                            </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => navigate('/reports/accounts')}>{t('accountsReport')}</Dropdown.Item>
-                        <Dropdown.Item onClick={() => navigate('/reports/transactions')}>{t('transactionsReport')}</Dropdown.Item>
-                        <Dropdown.Item onClick={() => navigate('/reports/ExpenseBalance')}>{t('expenseBalanceReport')}</Dropdown.Item>
-                    </Dropdown.Menu>
-                </Dropdown>
-
+                            <Dropdown.Menu>
+                                <Dropdown.Item onClick={() => navigate('/reports/accounts')}>{t('accountsReport')}</Dropdown.Item>
+                                <Dropdown.Item onClick={() => navigate('/reports/transactions')}>{t('transactionsReport')}</Dropdown.Item>
+                                <Dropdown.Item onClick={() => navigate('/reports/ExpenseBalance')}>{t('expenseBalanceReport')}</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </>
+                )}
 
                 <div className="d-flex align-items-center ms-auto">
                     <button
