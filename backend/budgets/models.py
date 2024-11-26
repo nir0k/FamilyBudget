@@ -1,10 +1,10 @@
 # budgets/models.py
+from datetime import datetime
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.utils.timezone import is_naive, make_aware
 from transactions.models import ExpenseCategory
-from django.utils.timezone import make_aware, is_naive
-from datetime import datetime
 
 User = get_user_model()
 

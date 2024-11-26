@@ -36,11 +36,8 @@ async function fetchAllPaginatedData(url, authToken) {
  */
 export const fetchLocales = async () => {
     const token = localStorage.getItem('authToken');
-    const response = await api.get('/locale-choices/', {
-        headers: {
-            'Authorization': `Token ${token}`,
-        },
-    });
+    const headers = token ? { 'Authorization': `Token ${token}` } : {};
+    const response = await api.get('/locale-choices/', { headers });
 
     return response.data;
 };
