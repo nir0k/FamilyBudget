@@ -1,7 +1,7 @@
 - Add ability to create, modify and delete categories.
 - Add defaults category, curency and account types
 - change Categories to common and delete if no more users
-- Refresh transactions after add and toast notify about status
+- ~~Refresh transactions after add and toast notify about status~~
 - Add transfer ability
-- Fix error with chnage data in exist transactions
+- ~~Fix error with chnage data in exist transactions~~
 - Fix Account report (don't recalculate values)

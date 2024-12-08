@@ -1,5 +1,5 @@
 // TransactionsPage.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Table, Form, Pagination, Dropdown, ButtonGroup, InputGroup, Button, Modal } from 'react-bootstrap';
 import Select from 'react-select';
 import { useTranslation } from 'react-i18next';
@@ -148,6 +148,7 @@ function TransactionsPage({ isDarkTheme }) {
       }
       setShowModal(false);
       setCurrentPage(1); // Reset to first page after adding or editing
+      loadTransactions(); // Reload transactions after adding/editing
     } catch (error) {
       console.error('Failed to save transaction:', error);
     }
@@ -193,32 +194,37 @@ function TransactionsPage({ isDarkTheme }) {
     return newTransaction.transaction_type === 'expense' ? expenseCategories : incomeCategories;
   };
 
-  // Загрузка транзакций на основе текущего состояния (пагинация, сортировка, фильтрация)
-  useEffect(() => {
-    const loadTransactions = async () => {
-      try {
-        const ordering = `${sortConfig.direction === 'desc' ? '-' : ''}${sortConfig.key}`;
-        const params = {
-          offset: (currentPage - 1) * rowsPerPage,
-          limit: rowsPerPage,
-          ordering,
-          ...filters.reduce((acc, filter) => {
-            acc[filter.field] = filter.value;
-            return acc;
-          }, {}),
-        };
+  const getCategoryLabel = (transaction) => {
+    const categoryList = transaction.transaction_type === 'income' ? incomeCategories : expenseCategories;
+    return categoryList.find((cat) => cat.value === transaction.category)?.label || '';
+  };
 
-        const data = await fetchTransactions(authToken, params);
+  // Move loadTransactions function outside of useEffect
+  const loadTransactions = useCallback(async () => {
+    try {
+      const ordering = `${sortConfig.direction === 'desc' ? '-' : ''}${sortConfig.key}`;
+      const params = {
+        offset: (currentPage - 1) * rowsPerPage,
+        limit: rowsPerPage,
+        ordering,
+        ...filters.reduce((acc, filter) => {
+          acc[filter.field] = filter.value;
+          return acc;
+        }, {}),
+      };
 
-        setTransactions(data.results);
-        setTotalCount(data.count);
-      } catch (error) {
-        console.error('Failed to fetch transactions:', error);
-      }
-    };
+      const data = await fetchTransactions(authToken, params);
 
-    loadTransactions();
+      setTransactions(data.results);
+      setTotalCount(data.count);
+    } catch (error) {
+      console.error('Failed to fetch transactions:', error);
+    }
   }, [authToken, currentPage, rowsPerPage, sortConfig, filters]);
+
+  useEffect(() => {
+    loadTransactions();
+  }, [loadTransactions]);
 
   // Обработка сортировки
   const handleSort = (key) => {
@@ -597,7 +603,7 @@ function TransactionsPage({ isDarkTheme }) {
                       {col === 'time' && date.toLocaleTimeString()}
                       {col === 'amount' && tx.amount}
                       {col === 'currency' && currencies[tx.currency]}
-                      {col === 'category' && getFilteredCategories().find((cat) => cat.value === tx.category)?.label}
+                      {col === 'category' && getCategoryLabel(tx)}
                       {col === 'account' && accounts.find((acc) => acc.value === tx.account)?.label}
                       {col === 'description' && tx.description}
                       {col === 'type' && (tx.transaction_type === 'income' ? t('income') : t('expense'))}
