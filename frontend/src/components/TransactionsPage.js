@@ -96,7 +96,10 @@ function TransactionsPage({ isDarkTheme }) {
   };
 
   const handleEditModalShow = (transaction) => {
-    setNewTransaction(transaction);
+    setNewTransaction({
+        ...transaction,
+        date: new Date(transaction.date) // Convert date string to Date object
+    });
     setEditTransaction(transaction);
     setShowModal(true);
   };
